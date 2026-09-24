@@ -1,13 +1,14 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useInView } from 'motion/react';
+import { motion, useInView, useReducedMotion } from 'motion/react';
 import { eventConfig } from '@/content/event';
 import { assets } from '@/content/assets';
 
 export function AboutBriefing() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <section ref={sectionRef} id="about" className="w-full bg-background py-24 md:py-32 overflow-hidden">
@@ -34,8 +35,8 @@ export function AboutBriefing() {
             
             {assets.professor.available && assets.professor.src ? (
               <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+                initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+                animate={isInView ? { opacity: 1, y: 0 } : undefined}
                 transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
                 className="relative z-10 w-full max-w-[360px] md:max-w-none h-[360px] md:h-[560px]"
               >

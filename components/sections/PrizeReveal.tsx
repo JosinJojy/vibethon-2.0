@@ -1,13 +1,22 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useInView } from 'motion/react';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useInView, useReducedMotion } from 'motion/react';
 import { prizes } from '@/content/event';
 import { assets } from '@/content/assets';
 
 export function PrizeReveal() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.25 });
+  const shouldReduceMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(true); // Default true to prevent SSR hydration mismatch jumps on x
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize(); // set on mount
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <section ref={sectionRef} id="prizes" className="relative w-full bg-[#141416] py-24 md:py-32 overflow-hidden">
@@ -27,14 +36,14 @@ export function PrizeReveal() {
       <div className="absolute inset-0 z-0 flex justify-center pointer-events-none">
         <motion.div 
           className="w-1/2 h-full bg-[#1A1A1D] border-r border-border-subtle"
-          initial={{ x: 0, opacity: 0.8 }}
-          animate={isInView ? { x: '-28%', opacity: 0.15 } : { x: 0, opacity: 0.8 }}
+          initial={shouldReduceMotion ? { x: 0, opacity: 0.15 } : { x: 0, opacity: 0.8 }}
+          animate={isInView ? { x: isMobile || shouldReduceMotion ? 0 : '-28%', opacity: 0.15 } : undefined}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         />
         <motion.div 
           className="w-1/2 h-full bg-[#1A1A1D] border-l border-border-subtle"
-          initial={{ x: 0, opacity: 0.8 }}
-          animate={isInView ? { x: '28%', opacity: 0.15 } : { x: 0, opacity: 0.8 }}
+          initial={shouldReduceMotion ? { x: 0, opacity: 0.15 } : { x: 0, opacity: 0.8 }}
+          animate={isInView ? { x: isMobile || shouldReduceMotion ? 0 : '28%', opacity: 0.15 } : undefined}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         />
       </div>
@@ -46,8 +55,8 @@ export function PrizeReveal() {
         </h2>
         
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+          animate={isInView ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.55, ease: 'easeOut', delay: 0.1 }}
           className="flex flex-col items-center"
         >

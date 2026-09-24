@@ -1,12 +1,13 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useInView } from 'motion/react';
+import { motion, useInView, useReducedMotion } from 'motion/react';
 import { phaseCopy } from '@/content/event';
 
 export function EventPhases() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <section ref={sectionRef} id="phases" className="w-full bg-[#141416] py-24 md:py-32">
@@ -25,8 +26,8 @@ export function EventPhases() {
           {phaseCopy.map((phase, i) => (
             <motion.div
               key={phase.number}
-              initial={{ opacity: 0, y: 12 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+              initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+              animate={isInView ? { opacity: 1, y: 0 } : undefined}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }}
               className="group/row flex flex-col md:grid md:grid-cols-12 md:gap-6 py-10 md:py-16 border-b border-border-subtle relative transition-colors"
             >

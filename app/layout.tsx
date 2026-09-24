@@ -31,6 +31,9 @@ export default function RootLayout({
       className={`${bebasNeue.variable} ${inter.variable} antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground selection:bg-accent-red selection:text-white">
+        <a href="#hero" className="absolute top-0 left-0 -translate-y-full focus:translate-y-0 bg-accent-red text-white px-4 py-2 z-[100] transition-transform">
+          Skip to content
+        </a>
         {children}
       </body>
     </html>

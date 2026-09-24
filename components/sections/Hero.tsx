@@ -13,19 +13,21 @@ export function Hero() {
     >
       {/* Background Images */}
       <div className="absolute inset-0 z-0 select-none">
-        <picture>
-          <source 
-            media="(min-width: 768px)" 
-            srcSet={assets.heroDesktop.src || ''} 
-          />
-          <img 
-            src={assets.heroMobile.src || ''} 
-            alt="" 
-            className="w-full h-full object-cover object-center opacity-40" 
-            decoding="sync"
-            fetchPriority="high"
-          />
-        </picture>
+        {assets.heroMobile.available && assets.heroDesktop.available && (
+          <picture>
+            <source 
+              media="(min-width: 768px)" 
+              srcSet={assets.heroDesktop.src || ''} 
+            />
+            <img 
+              src={assets.heroMobile.src || ''} 
+              alt="" 
+              className="w-full h-full object-cover object-center opacity-40" 
+              decoding="sync"
+              fetchPriority="high"
+            />
+          </picture>
+        )}
         {/* Dark overlays to ensure text readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/95" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />

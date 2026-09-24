@@ -2,7 +2,7 @@
 
 ## Prompts Checklist
 - [x] **Prompt 0**: Initial inspection, creation of `vibethon-spec.md` and `vibethon-progress.md`, and report of architecture/dependencies.
-- [ ] **Prompt 1**: Setup project foundations (tokens, fonts, global CSS, layout, header shell).
+- [x] **Prompt 1**: Setup project foundations (tokens, fonts, global CSS, layout, header shell).
 - [ ] **Prompt 2**: Implement core static sections and typography rules (Hero static, Prizes, About, Phases).
 - [ ] **Prompt 3**: Implement timeline, entry dossier, and previous edition static sections.
 - [ ] **Prompt 4**: Implement opening intro sequence, hero animations, and general scroll reveals.

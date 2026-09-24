@@ -12,7 +12,7 @@ import { JoinFooter } from '@/components/sections/JoinFooter';
 export default function Home() {
   return (
     <>
-      <IntroSequence />
+      {/* <IntroSequence /> */}
       <Header />
       <main className="flex flex-col w-full">
         <Hero />

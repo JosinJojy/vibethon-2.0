@@ -24,8 +24,10 @@ export function Header() {
     { label: 'Glimpses', href: '#glimpses' },
   ];
 
-  const registerEnabled = !!eventConfig.unstopUrl;
-  const registerHref = eventConfig.unstopUrl || '#';
+  const validUnstopUrl = eventConfig.unstopUrl ? eventConfig.unstopUrl : null;
+  // Note: Since this is in header and needs to match SSR, we do simplified check
+  const registerEnabled = !!validUnstopUrl;
+  const registerHref = validUnstopUrl || '#';
   const registerText = registerEnabled ? 'Register' : 'Soon';
 
   // Handle escape to close menu

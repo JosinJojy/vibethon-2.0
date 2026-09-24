@@ -54,6 +54,7 @@ export function IntroSequence() {
       }
       setState('complete');
       setShouldRender(false);
+      window.dispatchEvent(new Event('vibethon-reveal'));
       // Optional: focus main heading
       const h1 = document.querySelector('h1');
       if (h1) {
@@ -88,6 +89,12 @@ export function IntroSequence() {
       document.body.style.overflow = '';
     };
   }, [shouldRender, state]);
+
+  useEffect(() => {
+    if (state === 'reveal') {
+      window.dispatchEvent(new Event('vibethon-reveal'));
+    }
+  }, [state]);
 
   if (!shouldRender) return null;
 

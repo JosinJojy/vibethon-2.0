@@ -1,0 +1,84 @@
+'use client';
+
+import { useRef } from 'react';
+import { motion, useInView } from 'motion/react';
+import { prizes } from '@/content/event';
+import { assets } from '@/content/assets';
+
+export function PrizeReveal() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.25 });
+
+  return (
+    <section ref={sectionRef} id="prizes" className="relative w-full bg-[#141416] py-24 md:py-32 overflow-hidden">
+      {/* Background Vault Chamber */}
+      <div className="absolute inset-0 z-0 select-none opacity-20 mix-blend-luminosity">
+        {assets.vaultChamber.available && assets.vaultChamber.src && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img 
+            src={assets.vaultChamber.src} 
+            alt="" 
+            className="w-full h-full object-cover object-center"
+          />
+        )}
+      </div>
+
+      {/* Decorative Door Panels */}
+      <div className="absolute inset-0 z-0 flex justify-center pointer-events-none">
+        <motion.div 
+          className="w-1/2 h-full bg-[#1A1A1D] border-r border-border-subtle"
+          initial={{ x: 0, opacity: 0.8 }}
+          animate={isInView ? { x: '-28%', opacity: 0.15 } : { x: 0, opacity: 0.8 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        />
+        <motion.div 
+          className="w-1/2 h-full bg-[#1A1A1D] border-l border-border-subtle"
+          initial={{ x: 0, opacity: 0.8 }}
+          animate={isInView ? { x: '28%', opacity: 0.15 } : { x: 0, opacity: 0.8 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 max-w-[1280px] mx-auto px-5 md:px-8 lg:px-16 flex flex-col items-center text-center">
+        <h2 className="font-mono text-[12px] tracking-[0.12em] text-muted mb-4 uppercase">
+          The vault holds
+        </h2>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+          transition={{ duration: 0.55, ease: 'easeOut', delay: 0.1 }}
+          className="flex flex-col items-center"
+        >
+          <div className="font-bebas text-[clamp(72px,13vw,176px)] leading-none tracking-tight text-foreground">
+            {prizes.total}
+          </div>
+          <div className="font-sans text-sm md:text-base font-semibold tracking-wider text-accent-red mt-4 uppercase">
+            Total Prize Pool
+          </div>
+        </motion.div>
+
+        {/* Prize Split Breakdown */}
+        <div className="mt-20 md:mt-24 w-full max-w-4xl border-y border-border-subtle flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-border-subtle">
+          
+          <div className="flex-1 py-8 md:py-10 flex flex-row md:flex-col items-center justify-between md:justify-center px-4 md:px-0">
+            <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-muted uppercase md:mb-4">First</span>
+            <span className="font-bebas text-4xl md:text-6xl text-foreground">{prizes.first}</span>
+          </div>
+          
+          <div className="flex-1 py-8 md:py-10 flex flex-row md:flex-col items-center justify-between md:justify-center px-4 md:px-0">
+            <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-muted uppercase md:mb-4">Second</span>
+            <span className="font-bebas text-3xl md:text-5xl text-foreground">{prizes.second}</span>
+          </div>
+          
+          <div className="flex-1 py-8 md:py-10 flex flex-row md:flex-col items-center justify-between md:justify-center px-4 md:px-0">
+            <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-muted uppercase md:mb-4">Third</span>
+            <span className="font-bebas text-3xl md:text-5xl text-foreground">{prizes.third}</span>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+  );
+}

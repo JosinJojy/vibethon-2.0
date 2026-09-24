@@ -122,33 +122,35 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
             ))}
           </div>
           
-          <div className="flex items-center justify-between mt-4">
-            <p className="font-mono text-xs text-muted tracking-widest uppercase">
-              {currentIndex + 1} / {images.length}
-            </p>
-            <div className="flex gap-2">
-              <button 
-                className="w-10 h-10 flex items-center justify-center border border-border-subtle rounded text-foreground focus:outline-none focus:ring-2 focus:ring-foreground disabled:opacity-30 disabled:cursor-not-allowed"
-                onClick={() => scrollTo(currentIndex - 1)}
-                disabled={currentIndex === 0}
-                aria-label="Previous image"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M15 18l-6-6 6-6" />
-                </svg>
-              </button>
-              <button 
-                className="w-10 h-10 flex items-center justify-center border border-border-subtle rounded text-foreground focus:outline-none focus:ring-2 focus:ring-foreground disabled:opacity-30 disabled:cursor-not-allowed"
-                onClick={() => scrollTo(currentIndex + 1)}
-                disabled={currentIndex === images.length - 1}
-                aria-label="Next image"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 18l6-6-6-6" />
-                </svg>
-              </button>
+          {images.length > 1 && (
+            <div className="flex items-center justify-between mt-4">
+              <p className="font-mono text-xs text-muted tracking-widest uppercase">
+                {currentIndex + 1} / {images.length}
+              </p>
+              <div className="flex gap-2">
+                <button 
+                  className="w-10 h-10 flex items-center justify-center border border-border-subtle rounded text-foreground focus:outline-none focus:ring-2 focus:ring-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                  onClick={() => scrollTo(currentIndex - 1)}
+                  disabled={currentIndex === 0}
+                  aria-label="Previous image"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+                <button 
+                  className="w-10 h-10 flex items-center justify-center border border-border-subtle rounded text-foreground focus:outline-none focus:ring-2 focus:ring-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                  onClick={() => scrollTo(currentIndex + 1)}
+                  disabled={currentIndex === images.length - 1}
+                  aria-label="Next image"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
           
           <p className="font-sans text-sm text-muted mt-4 min-h-[3rem]">
             {images[currentIndex]?.caption}

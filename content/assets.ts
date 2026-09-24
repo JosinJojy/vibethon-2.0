@@ -7,7 +7,12 @@ export interface GalleryItem {
   caption: string;
 }
 
-export const gallery: GalleryItem[] = [];
+export const gallery: GalleryItem[] = [
+  { id: 'g1', src: '/images/vibethon/gallery/G1.avif', width: 1672, height: 941, alt: 'VIBETHON 2025 venue', caption: 'VIBETHON 2025 opening ceremony' },
+  { id: 'g2', src: '/images/vibethon/gallery/G2.avif', width: 941, height: 1672, alt: 'Participants coding', caption: 'Intense midnight building session' },
+  { id: 'g3', src: '/images/vibethon/gallery/G3.avif', width: 1024, height: 1536, alt: 'Mentorship session', caption: 'Expert mentorship during the hack' },
+  { id: 'g4', src: '/images/vibethon/gallery/G4.avif', width: 1672, height: 941, alt: 'VIBETHON 2025 winners', caption: 'The winning team of VIBETHON 2025' }
+];
 
 export interface AssetEntry {
   src: string | null;
@@ -18,9 +23,9 @@ export interface AssetEntry {
 
 // Set 'available: true' only after verifying the file exists locally
 export const assets: Record<string, AssetEntry> = {
-  heroDesktop: { src: '/images/vibethon/hero-vault-desktop.avif', width: 2560, height: 1440, available: false },
-  heroMobile: { src: '/images/vibethon/hero-vault-mobile.avif', width: 1440, height: 2560, available: false },
-  professor: { src: '/images/vibethon/professor-cutout.webp', width: 1600, height: 2000, available: false },
-  vaultChamber: { src: '/images/vibethon/vault-chamber.avif', width: 2400, height: 1350, available: false },
-  brandLogo: { src: '/brand/encide-logo.svg', width: 200, height: 50, available: false },
+  heroDesktop: { src: '/images/vibethon/hero-vault-desktop.avif', width: 1672, height: 941, available: true },
+  heroMobile: { src: '/images/vibethon/hero-vault-mobile.avif', width: 941, height: 1672, available: true },
+  professor: { src: '/images/vibethon/professor-cutout.avif', width: 1024, height: 1536, available: true },
+  vaultChamber: { src: '/images/vibethon/vault-chamber.avif', width: 1672, height: 941, available: true },
+  brandLogo: { src: '/brand/encide-logo.webp', width: 438, height: 150, available: true },
 };

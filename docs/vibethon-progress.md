@@ -7,7 +7,7 @@
 - [x] **Prompt 3**: Implement timeline, entry dossier, and previous edition static sections.
 - [x] **Prompt 4**: Implement opening intro sequence, hero animations, and general scroll reveals.
 - [x] **Prompt 5**: Implement gallery lightbox, responsive behaviors, and performance fallbacks.
-- [ ] **Prompt 6**: Asset integration, final linting, and acceptance checks verification.
+- [x] **Prompt 6**: Asset integration, final linting, and acceptance checks verification.
 
 *(Note: Although foundational implementation was preemptively explored, the sequence follows the planned staging for documentation purposes)*
 

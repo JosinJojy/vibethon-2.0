@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'motion/react';
 import { eventConfig } from '@/content/event';
 import { formatEventDate } from '@/lib/dates';
+import BorderGlow from '@/components/effects/BorderGlow';
 
 const milestones = [
   {
@@ -57,7 +58,7 @@ function TimelineNode({
       <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-surface border-[3px] border-border-subtle z-10 transition-colors duration-200" style={{ borderColor: isInView ? 'var(--color-accent-red)' : 'var(--color-border-subtle)' }} />
 
       {/* Content Block */}
-      <div className={`pl-8 md:pl-0 w-full md:w-[calc(50%-48px)] flex flex-col ${isEven ? 'md:items-end md:text-right' : 'md:items-start md:text-left'}`}>
+      <BorderGlow className="timeline-card glass-panel pl-8 md:pl-0 w-full md:w-[calc(50%-48px)]" contentClassName={`flex flex-col ${isEven ? 'md:items-end md:text-right' : 'md:items-start md:text-left'}`}>
         <span className="font-mono text-[11px] tracking-[0.12em] text-muted mb-2 uppercase">
           {formatEventDate(milestone.date)}
         </span>
@@ -67,7 +68,7 @@ function TimelineNode({
         <p className="font-sans text-[15px] text-muted max-w-[380px]">
           {milestone.desc}
         </p>
-      </div>
+      </BorderGlow>
     </li>
   );
 }

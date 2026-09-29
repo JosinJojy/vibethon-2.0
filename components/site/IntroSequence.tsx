@@ -6,6 +6,7 @@ export function IntroSequence() {
   const [state, setState] = useState<'idle' | 'arming' | 'unlocking' | 'reveal' | 'complete'>('idle');
   const [shouldRender, setShouldRender] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const finishRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     // Only run on client after hydration
@@ -38,7 +39,7 @@ export function IntroSequence() {
   }, []);
 
   useEffect(() => {
-    if (!shouldRender || state === 'complete') return;
+    if (!shouldRender) return;
 
     const dialog = dialogRef.current;
     if (dialog && !dialog.open) {
@@ -47,7 +48,10 @@ export function IntroSequence() {
     
     document.body.style.overflow = 'hidden';
 
-    const cleanup = () => {
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
       document.body.style.overflow = '';
       if (dialog && dialog.open) {
         dialog.close();
@@ -62,9 +66,10 @@ export function IntroSequence() {
         h1.focus({ preventScroll: true });
       }
     };
+    finishRef.current = finish;
 
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') cleanup();
+      if (e.key === 'Escape') finish();
     };
     window.addEventListener('keydown', handleEscape);
 
@@ -78,7 +83,7 @@ export function IntroSequence() {
     const t1 = setTimeout(() => setState('arming'), 0);
     const t2 = setTimeout(() => setState('unlocking'), 350);
     const t3 = setTimeout(() => setState('reveal'), 900);
-    const t4 = setTimeout(() => cleanup(), 1900); // 1400 to start fade out, done at 1900
+    const t4 = setTimeout(finish, 1900); // 1400 to start fade out, done at 1900
 
     return () => {
       clearTimeout(t1);
@@ -87,8 +92,10 @@ export function IntroSequence() {
       clearTimeout(t4);
       window.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = '';
+      if (dialog?.open) dialog.close();
+      finishRef.current = null;
     };
-  }, [shouldRender, state]);
+  }, [shouldRender]);
 
   useEffect(() => {
     if (state === 'reveal') {
@@ -142,7 +149,7 @@ export function IntroSequence() {
       </div>
 
       <button
-        onClick={() => setState('reveal')}
+        onClick={() => finishRef.current?.()}
         className="absolute bottom-8 font-mono text-[10px] tracking-widest text-muted uppercase px-4 py-2 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-foreground rounded"
       >
         Skip sequence

@@ -1,13 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { assets } from '@/content/assets';
 import { eventConfig } from '@/content/event';
+import { LiquidButton } from '@/components/ui/liquid-glass-button';
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,17 +30,32 @@ export function Header() {
   const validUnstopUrl = eventConfig.unstopUrl ? eventConfig.unstopUrl : null;
   // Note: Since this is in header and needs to match SSR, we do simplified check
   const registerEnabled = !!validUnstopUrl;
-  const registerHref = validUnstopUrl || '#';
   const registerText = registerEnabled ? 'Register' : 'Soon';
 
-  // Handle escape to close menu
   useEffect(() => {
     if (!menuOpen) return;
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMenuOpen(false);
+    menuButtonRef.current?.focus();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+      if (e.key !== 'Tab') return;
+      const items = [
+        menuButtonRef.current,
+        ...Array.from(menuRef.current?.querySelectorAll<HTMLAnchorElement>('a') ?? []),
+      ].filter((item): item is HTMLButtonElement | HTMLAnchorElement => item !== null);
+      if (items.length === 0) return;
+      if (e.shiftKey && document.activeElement === items[0]) {
+        e.preventDefault();
+        items[items.length - 1].focus();
+      } else if (!e.shiftKey && document.activeElement === items[items.length - 1]) {
+        e.preventDefault();
+        items[0].focus();
+      }
     };
-    window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [menuOpen]);
 
   // Lock body scroll when menu is open
@@ -52,11 +70,9 @@ export function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 w-full z-50 transition-colors duration-300 ${
-          scrolled ? 'bg-[#141416]/95 backdrop-blur-md border-b border-border-subtle' : 'bg-transparent'
-        }`}
+        className={`site-header fixed top-0 w-full z-50 ${scrolled ? 'site-header--scrolled' : ''}`}
       >
-        <div className="max-w-[1280px] mx-auto px-5 md:px-8 lg:px-16 flex items-center justify-between h-[64px] md:h-[72px]">
+        <div className="site-header-inner max-w-[1280px] mx-auto px-5 md:px-8 lg:px-10 flex items-center justify-between h-[64px] md:h-[72px]">
           <Link href="#" className="flex items-center text-foreground font-bebas text-2xl tracking-wide focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background">
             {assets.brandLogo.available && assets.brandLogo.src ? (
                // eslint-disable-next-line @next/next/no-img-element
@@ -77,34 +93,22 @@ export function Header() {
                 {link.label}
               </a>
             ))}
-            <a
-              href={registerHref}
-              {...(registerEnabled ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className={`px-4 py-2 text-sm font-sans font-medium rounded transition-colors focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background ${
-                registerEnabled 
-                  ? 'bg-accent-red text-white hover:bg-[#b01c28]' 
-                  : 'bg-[#353337] text-muted cursor-not-allowed'
-              }`}
-              aria-disabled={!registerEnabled}
-              onClick={(e) => !registerEnabled && e.preventDefault()}
-            >
-              {registerText}
-            </a>
+            {registerEnabled && validUnstopUrl ? (
+              <LiquidButton asChild size="sm"><a href={validUnstopUrl} target="_blank" rel="noopener noreferrer">{registerText}</a></LiquidButton>
+            ) : (
+              <LiquidButton disabled size="sm" tone="neutral">{registerText}</LiquidButton>
+            )}
           </nav>
 
           {/* Mobile Nav Toggle */}
           <div className="flex md:hidden items-center gap-4">
-            <a
-              href={registerHref}
-              {...(registerEnabled ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className={`px-3 py-1.5 text-xs font-sans font-medium rounded ${
-                registerEnabled ? 'bg-accent-red text-white' : 'bg-[#353337] text-muted'
-              }`}
-              onClick={(e) => !registerEnabled && e.preventDefault()}
-            >
-              {registerText}
-            </a>
+            {registerEnabled && validUnstopUrl ? (
+              <LiquidButton asChild size="sm"><a href={validUnstopUrl} target="_blank" rel="noopener noreferrer">{registerText}</a></LiquidButton>
+            ) : (
+              <LiquidButton disabled size="sm" tone="neutral">{registerText}</LiquidButton>
+            )}
             <button
+              ref={menuButtonRef}
               className="text-foreground focus:outline-none focus:ring-2 focus:ring-foreground rounded p-1"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -125,7 +129,8 @@ export function Header() {
       {/* Mobile Menu Dialog */}
       {menuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-background/95 backdrop-blur-md pt-[64px] flex flex-col md:hidden"
+          ref={menuRef}
+          className="site-mobile-menu fixed inset-0 z-40 pt-[88px] flex flex-col md:hidden"
           role="dialog"
           aria-modal="true"
         >

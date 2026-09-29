@@ -1,4 +1,5 @@
 import { Header } from '@/components/site/Header';
+import { SiteAtmosphere } from '@/components/site/SiteAtmosphere';
 import { IntroSequence } from '@/components/site/IntroSequence';
 import { Hero } from '@/components/sections/Hero';
 import { PrizeReveal } from '@/components/sections/PrizeReveal';
@@ -13,6 +14,7 @@ export default function Home() {
   return (
     <>
       <IntroSequence />
+      <SiteAtmosphere />
       <Header />
       <main className="flex flex-col w-full">
         <Hero />

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'motion/react';
 import { prizes } from '@/content/event';
 import { assets } from '@/content/assets';
+import BorderGlow from '@/components/effects/BorderGlow';
 
 export function PrizeReveal() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -60,7 +61,7 @@ export function PrizeReveal() {
           transition={{ duration: 0.55, ease: 'easeOut', delay: 0.1 }}
           className="flex flex-col items-center"
         >
-          <div className="font-bebas text-[clamp(72px,13vw,176px)] leading-none tracking-tight text-foreground">
+          <div className="prize-total font-bebas text-[clamp(72px,13vw,176px)] leading-none tracking-tight text-foreground">
             {prizes.total}
           </div>
           <div className="font-sans text-sm md:text-base font-semibold tracking-wider text-accent-red mt-4 uppercase">
@@ -69,7 +70,7 @@ export function PrizeReveal() {
         </motion.div>
 
         {/* Prize Split Breakdown */}
-        <div className="mt-20 md:mt-24 w-full max-w-4xl border-y border-border-subtle flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-border-subtle">
+        <BorderGlow className="glass-panel prize-breakdown mt-20 md:mt-24 w-full max-w-4xl" contentClassName="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-border-subtle">
           
           <div className="flex-1 py-8 md:py-10 flex flex-row md:flex-col items-center justify-between md:justify-center px-4 md:px-0">
             <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-muted uppercase md:mb-4">First</span>
@@ -86,7 +87,7 @@ export function PrizeReveal() {
             <span className="font-bebas text-3xl md:text-5xl text-foreground">{prizes.third}</span>
           </div>
           
-        </div>
+        </BorderGlow>
       </div>
     </section>
   );

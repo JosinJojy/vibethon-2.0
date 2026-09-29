@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { GalleryItem } from '@/content/assets';
 import { Lightbox } from './Lightbox';
+import BorderGlow from '@/components/effects/BorderGlow';
 
 export function Gallery({ images }: { images: GalleryItem[] }) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -16,7 +17,8 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
 
     const handleScroll = () => {
       const scrollX = container.scrollLeft;
-      const itemWidth = container.clientWidth * 0.86; // 86vw
+      const firstItem = container.firstElementChild as HTMLElement | null;
+      const itemWidth = (firstItem?.offsetWidth || container.clientWidth * 0.86) + 12;
       const newIndex = Math.round(scrollX / itemWidth);
       if (newIndex !== currentIndex && newIndex >= 0 && newIndex < images.length) {
         setCurrentIndex(newIndex);
@@ -34,7 +36,8 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
     // Check reduced motion
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
-    const itemWidth = container.clientWidth * 0.86;
+    const firstItem = container.firstElementChild as HTMLElement | null;
+    const itemWidth = (firstItem?.offsetWidth || container.clientWidth * 0.86) + 12;
     container.scrollTo({
       left: index * itemWidth,
       behavior: prefersReduced ? 'auto' : 'smooth'
@@ -79,9 +82,9 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
             }
 
             return (
+              <BorderGlow key={img.id} className={`${colSpan} ${rowSpan} min-h-0`} contentClassName="h-full" borderRadius={14} glowRadius={18}>
               <button
-                key={img.id}
-                className={`${colSpan} ${rowSpan} relative group focus:outline-none focus:ring-4 focus:ring-accent-red focus:ring-offset-2 focus:ring-offset-background overflow-hidden`}
+                className="relative group w-full h-full focus:outline-none focus:ring-4 focus:ring-accent-red focus:ring-offset-2 focus:ring-offset-background overflow-hidden rounded-[13px]"
                 onClick={() => openLightbox(i)}
                 aria-label={`View photo: ${img.alt || img.caption}`}
               >
@@ -94,6 +97,7 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
                 <div className="absolute inset-0 bg-background/0 group-hover:bg-background/10 transition-colors duration-300" />
                 <div className="absolute inset-0 bg-[#3B2C24]/10 mix-blend-color pointer-events-none" /> {/* Mild consistent grade */}
               </button>
+              </BorderGlow>
             );
           })}
         </div>
@@ -105,9 +109,9 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
             className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-3 pb-4"
           >
             {images.map((img, i) => (
+              <BorderGlow key={img.id} className="snap-start flex-none w-[86vw] aspect-4/3" contentClassName="h-full" borderRadius={14} glowRadius={18}>
               <button
-                key={img.id}
-                className="relative snap-start flex-none w-[86vw] aspect-4/3 focus:outline-none focus:ring-2 focus:ring-accent-red"
+                className="relative w-full h-full rounded-[13px] overflow-hidden focus:outline-none focus:ring-2 focus:ring-accent-red"
                 onClick={() => openLightbox(i)}
                 aria-label={`View photo: ${img.alt || img.caption}`}
               >
@@ -119,6 +123,7 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
                 />
                 <div className="absolute inset-0 bg-[#3B2C24]/10 mix-blend-color pointer-events-none" />
               </button>
+              </BorderGlow>
             ))}
           </div>
           

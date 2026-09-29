@@ -1,34 +1,30 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
+import TechText from '@/components/effects/TechText';
+import TextLoop from '@/components/effects/TextLoop';
+import BorderGlow from '@/components/effects/BorderGlow';
 import { assets } from '@/content/assets';
 import { eventConfig } from '@/content/event';
 import { Countdown } from './Countdown';
 import { EventActions } from './EventActions';
 
 export function Hero() {
-  const mottoText = eventConfig.motto || 'Official motto coming soon';
   const [revealed, setRevealed] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
-  
   const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
-
-  const yParallax = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 24]);
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end start'] });
+  const yParallax = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 30]);
 
   useEffect(() => {
-    // Check if intro should be skipped
     let hasPlayed = false;
     try {
       hasPlayed = sessionStorage.getItem('vibethon-intro-v1') === 'true';
     } catch {
       hasPlayed = true;
     }
-    
+
     if (hasPlayed || window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.location.hash.length > 1 || window.scrollY >= 10) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setRevealed(true);
@@ -37,111 +33,94 @@ export function Hero() {
 
     const handleReveal = () => setRevealed(true);
     window.addEventListener('vibethon-reveal', handleReveal);
-    
-    // Safety fallback
-    const t = setTimeout(handleReveal, 2200);
-
+    const timer = setTimeout(handleReveal, 2200);
     return () => {
       window.removeEventListener('vibethon-reveal', handleReveal);
-      clearTimeout(t);
+      clearTimeout(timer);
     };
   }, []);
 
+  const revealMotion = (delay = 0) => ({
+    initial: shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 },
+    animate: revealed ? { opacity: 1, y: 0 } : undefined,
+    transition: { duration: 0.72, delay, ease: [0.22, 1, 0.36, 1] as const },
+  });
+
   return (
-    <section 
-      ref={containerRef}
-      id="hero" 
-      className="relative flex flex-col items-center justify-center min-h-[100svh] pt-[96px] pb-12 overflow-hidden bg-background"
-    >
-      {/* Background Images with Parallax */}
-      <motion.div className="absolute inset-0 z-0 select-none" style={{ y: yParallax }}>
+    <section ref={containerRef} id="hero" className="hero-stage relative overflow-hidden">
+      <motion.div className="hero-backdrop absolute inset-0 select-none" style={{ y: yParallax }} aria-hidden="true">
         {assets.heroMobile.available && assets.heroDesktop.available && (
           <picture>
-            <source 
-              media="(min-width: 768px)" 
-              srcSet={assets.heroDesktop.src || ''} 
-            />
-            <img 
-              src={assets.heroMobile.src || ''} 
-              alt="" 
-              className="w-full h-full object-cover object-center opacity-40" 
-              decoding="sync"
-              fetchPriority="high"
-            />
+            <source media="(min-width: 768px)" srcSet={assets.heroDesktop.src || ''} />
+            <img src={assets.heroMobile.src || ''} alt="" className="h-full w-full object-cover object-center" decoding="sync" fetchPriority="high" />
           </picture>
         )}
-        {/* Dark overlays to ensure text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/95" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-        {/* Subtle radial red glow - animated once over 8s */}
-        <motion.div 
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--color-accent-red)_0%,_transparent_70%)] mix-blend-overlay"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={revealed ? { opacity: 0.1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-          transition={{ duration: 8, ease: "easeOut" }}
-        />
       </motion.div>
+      <div className="hero-shell relative z-10 mx-auto w-full">
+        <div className="hero-main">
+          <motion.p {...revealMotion(0)} className="hero-kicker font-mono uppercase">
+            ENCIDE PRESENTS <span aria-hidden="true">/</span> 16 OCTOBER 2026
+          </motion.p>
+          <motion.h1 {...revealMotion(0.08)} className="hero-tech-title font-bebas" aria-label={eventConfig.brand.name}>
+            <span className="hero-wordmark-fallback" aria-hidden="true">{eventConfig.brand.name}</span>
+            <span className="hero-tech-canvas" aria-hidden="true">
+              <TechText
+                text={eventConfig.brand.name}
+                fontWeight={400}
+                fontSize={280}
+                letterSpacing={-0.018}
+                color="#fff1e5"
+                accentColor="#fc5e68"
+                reveal="letter"
+                dashLength={5}
+                dashGap={3}
+                specks={9}
+                speed={0.62}
+              />
+            </span>
+          </motion.h1>
+          <motion.div {...revealMotion(0.16)} className="hero-message">
+            <p className="hero-tagline font-bebas uppercase"><span>2.0</span> Eight hours. One big idea.</p>
+            <p className="hero-summary">An on-site vibe coding hackathon at MACE, Kothamangalam.</p>
+            {eventConfig.motto && <p className="hero-motto">{eventConfig.motto}</p>}
+          </motion.div>
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center text-center w-full max-w-[1280px] px-5 md:px-8 mx-auto mt-auto mb-auto">
-        <p className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-accent-red mb-4">
-          ENCIDE PRESENTS
-        </p>
-        
-        <motion.h1 
-          className="font-bebas text-[clamp(50px,16vw,112px)] md:text-[clamp(96px,14vw,208px)] leading-[0.85] tracking-[-0.02em] text-foreground text-shadow-hero uppercase select-none"
-          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          animate={revealed ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {eventConfig.brand.name}
-        </motion.h1>
-        
-        <motion.p 
-          className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-foreground mt-4 mb-6 md:mb-8"
-          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          animate={revealed ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
-        >
-          {eventConfig.brand.edition} / {eventConfig.brand.year}
-        </motion.p>
-        
-        <motion.div 
-          className="max-w-[34ch] w-full min-h-[3rem] mb-8 md:mb-10 text-muted font-sans text-base md:text-lg text-balance"
-          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          animate={revealed ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-        >
-          {mottoText}
-        </motion.div>
-        
-        <motion.div
-          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          animate={revealed ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.18 }}
-        >
-          <Countdown target={eventConfig.countdownTarget} />
-        </motion.div>
-        
-        <motion.div
-          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          animate={revealed ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.26 }}
-        >
-          <EventActions className="mt-10 mb-12 md:mt-12 md:mb-16" />
-        </motion.div>
-        
-        <motion.div 
-          className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-muted flex flex-wrap justify-center gap-2 md:gap-4 uppercase"
-          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          animate={revealed ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.34 }}
-        >
-          <span>{eventConfig.durationHours} HOURS</span>
-          <span className="opacity-50">/</span>
-          <span>{eventConfig.mode}</span>
-          <span className="opacity-50">/</span>
-          <span>{eventConfig.organizer.shortName}, {eventConfig.organizer.city}</span>
+          <motion.div {...revealMotion(0.24)} className="hero-control-wrap">
+            <BorderGlow
+              className="hero-control glass-panel"
+              backgroundColor="#151116"
+              borderRadius={24}
+              glowColor="355 88 66"
+              colors={['#9c2636', '#fa6669', '#ffc1ab']}
+              glowIntensity={0.7}
+              glowRadius={28}
+              edgeSensitivity={24}
+            >
+              <Countdown target={eventConfig.countdownTarget} />
+              <EventActions className="hero-control-actions" />
+            </BorderGlow>
+          </motion.div>
+        </div>
+
+        <motion.div {...revealMotion(0.38)} className="hero-base-line font-mono uppercase">
+          <div className="hero-facts-loop" aria-label={`${eventConfig.durationHours} hours. ${eventConfig.mode}. ${eventConfig.organizer.shortName}, ${eventConfig.organizer.city}.`}>
+            <TextLoop
+              text={`${eventConfig.durationHours} HOURS ✦ ${eventConfig.mode} ✦ ${eventConfig.organizer.shortName}, ${eventConfig.organizer.city}`}
+              shape="line"
+              compact
+              speed={52}
+              separator="✦"
+              fontSize={27}
+              fontWeight={600}
+              letterSpacing={2}
+              color="#f4ded9"
+              ribbon
+              ribbonColor="#5f1b29"
+              ribbonWidth={38}
+              className="hero-facts-ribbon"
+            />
+          </div>
+          <a href="#prizes" className="hero-scroll-link">Explore the mission <span aria-hidden="true">↓</span></a>
         </motion.div>
       </div>
     </section>

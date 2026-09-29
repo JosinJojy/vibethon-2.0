@@ -1,6 +1,7 @@
 import { previousEdition } from '@/content/event';
 import { gallery } from '@/content/assets';
 import { Gallery } from '../gallery/Gallery';
+import BorderGlow from '@/components/effects/BorderGlow';
 
 export function PreviousEdition() {
   return (
@@ -18,25 +19,25 @@ export function PreviousEdition() {
             {previousEdition.description}
           </p>
 
-          <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 border-y border-border-subtle py-8 md:py-12">
+          <div className="legacy-stats w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 border-y border-border-subtle py-8 md:py-12">
             
-            <div className="flex flex-col items-center">
+            <BorderGlow className="glass-panel legacy-stat" contentClassName="flex flex-col items-center">
               <span className="font-bebas text-6xl md:text-8xl text-foreground">
                 {previousEdition.stats.registered}
               </span>
               <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-accent-red mt-2 uppercase">
                 Registered Participants
               </span>
-            </div>
+            </BorderGlow>
             
-            <div className="flex flex-col items-center">
+            <BorderGlow className="glass-panel legacy-stat" contentClassName="flex flex-col items-center">
               <span className="font-bebas text-6xl md:text-8xl text-foreground">
                 {previousEdition.stats.shortlisted}
               </span>
               <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-accent-red mt-2 uppercase">
                 Shortlisted Participants
               </span>
-            </div>
+            </BorderGlow>
             
           </div>
 

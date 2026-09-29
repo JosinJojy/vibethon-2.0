@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'motion/react';
 import { phaseCopy } from '@/content/event';
+import BorderGlow from '@/components/effects/BorderGlow';
 
 export function EventPhases() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -22,18 +23,16 @@ export function EventPhases() {
           </p>
         </div>
 
-        <div className="flex flex-col border-t border-border-subtle group/list">
+        <div className="phase-list flex flex-col border-t border-border-subtle group/list">
           {phaseCopy.map((phase, i) => (
             <motion.div
               key={phase.number}
               initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               animate={isInView ? { opacity: 1, y: 0 } : undefined}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }}
-              className="group/row flex flex-col md:grid md:grid-cols-12 md:gap-6 py-10 md:py-16 border-b border-border-subtle relative transition-colors"
+              className="w-full"
             >
-              {/* Subtle hover red rule effect - top border override */}
-              <div className="absolute top-[-1px] left-0 w-full h-[1px] bg-accent-red opacity-0 group-hover/row:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
+              <BorderGlow className="phase-row glass-panel group/row" contentClassName="flex flex-col md:grid md:grid-cols-12 md:gap-6">
               {/* Mobile: Number + Title. Desktop: separated */}
               <div className="flex items-baseline gap-4 md:col-span-2 md:block mb-4 md:mb-0">
                 <span className="font-bebas text-5xl md:text-7xl text-muted group-hover/row:text-accent-red transition-colors duration-300">
@@ -67,6 +66,7 @@ export function EventPhases() {
                 </p>
               </div>
 
+              </BorderGlow>
             </motion.div>
           ))}
         </div>

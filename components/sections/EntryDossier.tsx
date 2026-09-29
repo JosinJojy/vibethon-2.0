@@ -1,4 +1,5 @@
 import { eventConfig, selectionCriteria, deliverables, judgingCriteria } from '@/content/event';
+import BorderGlow from '@/components/effects/BorderGlow';
 
 function DossierDetails({ title, children, defaultOpen = false }: { title: string, children: React.ReactNode, defaultOpen?: boolean }) {
   return (
@@ -45,23 +46,23 @@ export function EntryDossier() {
               {selectionCriteria}
             </p>
 
-            <div className="flex flex-col gap-6">
-              <div>
+            <div className="entry-facts flex flex-col gap-6">
+              <BorderGlow className="glass-panel fact-card">
                 <h4 className="font-mono text-[11px] tracking-[0.12em] text-muted uppercase mb-1">Team size</h4>
                 <p className="font-sans text-[17px] font-semibold text-foreground">{teamSizeStr}</p>
-              </div>
-              <div>
+              </BorderGlow>
+              <BorderGlow className="glass-panel fact-card">
                 <h4 className="font-mono text-[11px] tracking-[0.12em] text-muted uppercase mb-1">Eligibility</h4>
                 <p className="font-sans text-[17px] font-semibold text-foreground">{eligibilityStr}</p>
-              </div>
-              <div>
+              </BorderGlow>
+              <BorderGlow className="glass-panel fact-card">
                 <h4 className="font-mono text-[11px] tracking-[0.12em] text-muted uppercase mb-1">Registration fee</h4>
                 <p className="font-sans text-[17px] font-semibold text-foreground">{feeStr}</p>
-              </div>
+              </BorderGlow>
             </div>
           </div>
 
-          <div className="w-full md:w-7/12 border-t border-border-subtle mt-4 md:mt-0">
+          <BorderGlow className="glass-panel dossier-disclosures w-full md:w-7/12 border-t border-border-subtle mt-4 md:mt-0">
             <DossierDetails title="Selection criteria">
               <p>{selectionCriteria}</p>
             </DossierDetails>
@@ -93,7 +94,7 @@ export function EntryDossier() {
                 )}
               </div>
             </DossierDetails>
-          </div>
+          </BorderGlow>
 
         </div>
 

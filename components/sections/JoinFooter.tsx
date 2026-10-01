@@ -20,17 +20,19 @@ export function JoinFooter() {
         <div className="max-w-[1280px] w-full mx-auto px-5 md:px-8 lg:px-16 flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
           
           <div className="flex flex-col items-center md:items-start gap-4">
-            {assets.brandLogo.available && assets.brandLogo.src ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={assets.brandLogo.src} alt={`${eventConfig.organizer.name} Logo`} className="h-8 mb-2" />
-            ) : (
-              <span className="font-display text-2xl tracking-wide text-foreground mb-2">{eventConfig.organizer.name}</span>
-            )}
+            <a href="https://www.encide.in" target="_blank" rel="noopener noreferrer" className="flex items-center text-foreground focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background">
+              {assets.brandLogo.available && assets.brandLogo.src ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={assets.brandLogo.src} alt={`${eventConfig.organizer.name} Logo`} className="h-8 mb-2" />
+              ) : (
+                <span className="font-display text-2xl tracking-wide text-foreground mb-2">{eventConfig.organizer.name}</span>
+              )}
+            </a>
             <p className="font-sans text-sm text-muted text-center md:text-left max-w-[30ch]">
-              Organized by {eventConfig.organizer.name}, the coding club at {eventConfig.organizer.institution}.
+              Organized by <a href="https://www.encide.in" target="_blank" rel="noopener noreferrer" className="text-accent-red hover:underline decoration-accent-red underline-offset-4">{eventConfig.organizer.name}</a>, the coding club at {eventConfig.organizer.institution}.
             </p>
             <p className="font-sans text-xs text-muted/60">
-              © {eventConfig.brand.year} {eventConfig.organizer.name}. All rights reserved.
+              © {eventConfig.brand.year} <a href="https://www.encide.in" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">{eventConfig.organizer.name}</a>. All rights reserved.
             </p>
           </div>
 

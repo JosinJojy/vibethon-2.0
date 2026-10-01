@@ -8,10 +8,10 @@ export interface GalleryItem {
 }
 
 export const gallery: GalleryItem[] = [
-  { id: 'g1', src: '/images/vibethon/gallery/G1.avif', width: 1672, height: 941, alt: 'VIBETHON 2025 venue', caption: 'VIBETHON 2025 opening ceremony' },
-  { id: 'g2', src: '/images/vibethon/gallery/G2.avif', width: 941, height: 1672, alt: 'Participants coding', caption: 'Intense midnight building session' },
-  { id: 'g3', src: '/images/vibethon/gallery/G3.avif', width: 1024, height: 1536, alt: 'Mentorship session', caption: 'Expert mentorship during the hack' },
-  { id: 'g4', src: '/images/vibethon/gallery/G4.avif', width: 1672, height: 941, alt: 'VIBETHON 2025 winners', caption: 'The winning team of VIBETHON 2025' }
+  { id: 'g1', src: '/images/vibethon/gallery/I1.jpeg', width: 1672, height: 941, alt: 'VIBETHON 2025 venue', caption: 'VIBETHON 2025 opening ceremony' },
+  { id: 'g2', src: '/images/vibethon/gallery/I2.jpeg', width: 941, height: 1672, alt: 'Participants coding', caption: 'Intense midnight building session' },
+  { id: 'g3', src: '/images/vibethon/gallery/I3.jpeg', width: 1024, height: 1536, alt: 'Mentorship session', caption: 'Expert mentorship during the hack' },
+  // { id: 'g4', src: '/images/vibethon/gallery/G4.avif', width: 1672, height: 941, alt: 'VIBETHON 2025 winners', caption: 'The winning team of VIBETHON 2025' }
 ];
 
 export interface AssetEntry {

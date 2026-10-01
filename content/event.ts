@@ -18,8 +18,8 @@ export const eventConfig = {
   countdownTarget: 'eventStart' as 'eventStart' | 'eventEnd',
   unstopUrl: 'https://unstop.com/p/vibethon-20-mar-athanasius-college-of-engineering-mace-kerala-1757605' as string | null,
   whatsappUrl: 'https://chat.whatsapp.com/L2o1fkENmu3JFYkNfaa4uZ?s=cl&p=a&mlu=4&ilr=4' as string | null,
-  teamSize: null as string | null,
-  eligibility: null as string | null,
+  teamSize: "1-3" as string | null,
+  eligibility: "open to all" as string | null,
   fee: null as string | null,
   contactEmail: null as string | null,
   socialLinks: [] as { label: string; href: string }[],
@@ -84,9 +84,9 @@ export const previousEdition = {
     shortlisted: 70
   },
   prizes: {
-    total: '₹15,000',
-    first: '₹7,500',
-    second: '₹5,000',
-    third: '₹2,500'
+    total: '₹20,000',
+    first: '₹10,000',
+    second: '₹6,000',
+    third: '₹4,500'
   }
 };

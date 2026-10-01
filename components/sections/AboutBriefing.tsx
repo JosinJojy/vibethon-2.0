@@ -35,7 +35,7 @@ export function AboutBriefing() {
             The Professor&apos;s Briefing
           </h2>
           <p className="font-sans text-base md:text-[17px] leading-relaxed text-muted max-w-[58ch]">
-            VIBETHON 2.0 is an 8-hour, on-site vibe coding hackathon organized by {eventConfig.organizer.name} at {eventConfig.organizer.institution}, {eventConfig.organizer.city}. Build with modern AI tools while demonstrating your own technical understanding, originality, problem-solving and product decisions.
+            VIBETHON 2.0 is an 8-hour, on-site vibe coding hackathon organized by <a href="https://www.encide.in" target="_blank" rel="noopener noreferrer" className="text-accent-red hover:underline decoration-accent-red underline-offset-4">{eventConfig.organizer.name}</a> at {eventConfig.organizer.institution}, {eventConfig.organizer.city}. Build with modern AI tools while demonstrating your own technical understanding, originality, problem-solving and product decisions.
           </p>
           <p className="font-serif italic text-[22px] md:text-[26px] leading-snug text-foreground mt-10 max-w-[36ch]">
             AI can accelerate the work. Your team still owns the thinking, the decisions and the final product.
@@ -46,7 +46,7 @@ export function AboutBriefing() {
               The crew behind the mission
             </h3>
             <p className="font-sans text-base leading-relaxed text-muted max-w-[58ch]">
-              {eventConfig.organizer.name} is the coding club at {eventConfig.organizer.institution}, {eventConfig.organizer.city}, and the organizer of {eventConfig.brand.name} {eventConfig.brand.edition}.
+              <a href="https://www.encide.in" target="_blank" rel="noopener noreferrer" className=" hover:underline decoration-accent-red underline-offset-4">{eventConfig.organizer.name}</a> is the coding club at {eventConfig.organizer.institution}, {eventConfig.organizer.city}, and the organizer of {eventConfig.brand.name} {eventConfig.brand.edition}.
             </p>
           </div>
         </div>

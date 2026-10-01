@@ -5,12 +5,20 @@ import Link from 'next/link';
 import { assets } from '@/content/assets';
 import { eventConfig } from '@/content/event';
 import { LiquidButton } from '@/components/ui/liquid-glass-button';
+import { motion, useReducedMotion } from 'motion/react';
+import { onReveal } from '@/lib/reveal';
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const [revealed, setRevealed] = useState(false);
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    return onReveal(() => setRevealed(true));
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,18 +77,21 @@ export function Header() {
 
   return (
     <>
-      <header
+      <motion.header
+        initial={{ opacity: reduce ? 1 : 0 }}
+        animate={{ opacity: revealed || reduce ? 1 : 0 }}
+        transition={{ duration: 1.2, delay: reduce ? 0 : 0.2, ease: "easeOut" }}
         className={`site-header fixed top-0 w-full z-50 ${scrolled ? 'site-header--scrolled' : ''}`}
       >
         <div className="site-header-inner max-w-[1280px] mx-auto px-5 md:px-8 lg:px-10 flex items-center justify-between h-[64px] md:h-[72px]">
-          <Link href="#" className="flex items-center text-foreground font-display text-2xl tracking-wide focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background">
+          <a href="https://www.encide.in" target="_blank" rel="noopener noreferrer" className="flex items-center text-foreground font-display text-2xl tracking-wide focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background">
             {assets.brandLogo.available && assets.brandLogo.src ? (
                // eslint-disable-next-line @next/next/no-img-element
               <img src={assets.brandLogo.src} alt="ENCIDE Logo" className="h-8" />
             ) : (
               <span>ENCIDE</span>
             )}
-          </Link>
+          </a>
           
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
@@ -102,11 +113,6 @@ export function Header() {
 
           {/* Mobile Nav Toggle */}
           <div className="flex md:hidden items-center gap-4">
-            {registerEnabled && validUnstopUrl ? (
-              <LiquidButton asChild size="sm"><a href={validUnstopUrl} target="_blank" rel="noopener noreferrer">{registerText}</a></LiquidButton>
-            ) : (
-              <LiquidButton disabled size="sm" tone="neutral">{registerText}</LiquidButton>
-            )}
             <button
               ref={menuButtonRef}
               className="text-foreground focus:outline-none focus:ring-2 focus:ring-foreground p-1"
@@ -124,7 +130,7 @@ export function Header() {
             </button>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Mobile Menu Dialog */}
       {menuOpen && (

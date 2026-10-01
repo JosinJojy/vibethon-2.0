@@ -1,7 +1,7 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useInView, useReducedMotion } from 'motion/react';
+import { useRef, useEffect } from 'react';
+import { motion, useInView, useReducedMotion, useMotionValue, useTransform, animate } from 'motion/react';
 import { prizes } from '@/content/event';
 
 const tiers = [
@@ -14,6 +14,21 @@ export function PrizeReveal() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.25 });
   const shouldReduceMotion = useReducedMotion();
+
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => {
+    return `₹${Math.round(latest).toLocaleString('en-IN')}`;
+  });
+
+  useEffect(() => {
+    const targetValue = parseInt(prizes.total.replace(/[^0-9]/g, ''), 10);
+    if (isInView && !shouldReduceMotion) {
+      const controls = animate(count, targetValue, { duration: 1.5, ease: "easeOut" });
+      return () => controls.stop();
+    } else if (isInView && shouldReduceMotion) {
+      count.set(targetValue);
+    }
+  }, [isInView, shouldReduceMotion, count]);
 
   return (
     <section ref={sectionRef} id="prizes" className="w-full py-28 md:py-40">
@@ -29,7 +44,7 @@ export function PrizeReveal() {
           className="flex flex-col items-center"
         >
           <div className="prize-total font-display text-[clamp(72px,13vw,176px)] leading-none text-foreground">
-            {prizes.total}
+            <motion.span>{rounded}</motion.span>
           </div>
           <div className="font-mono text-[12px] font-bold tracking-[0.24em] text-accent-red mt-6 uppercase">
             Total prize pool

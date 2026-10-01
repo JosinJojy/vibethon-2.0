@@ -1,13 +1,12 @@
 import { eventConfig } from '@/content/event';
 import { assets } from '@/content/assets';
 import { EventActions } from './EventActions';
-import BorderGlow from '@/components/effects/BorderGlow';
 
 export function JoinFooter() {
   return (
-    <section id="join" className="w-full bg-[#141416] flex flex-col pt-24 md:pt-32">
-      <BorderGlow className="join-panel max-w-[1280px] w-full mx-auto px-5 md:px-8 lg:px-16 flex-1 py-24 md:py-32" contentClassName="flex flex-col items-center">
-        <h2 className="font-display text-[clamp(40px,6vw,96px)] leading-[0.9] tracking-tight text-foreground uppercase mb-6 text-center max-w-[15ch]">
+    <section id="join" className="w-full flex flex-col">
+      <div className="max-w-[1280px] w-full mx-auto px-5 md:px-8 lg:px-16 py-32 md:py-48 flex flex-col items-center">
+        <h2 className="font-display text-[clamp(48px,7vw,112px)] leading-[0.9] text-foreground uppercase mb-6 text-center max-w-[15ch]">
           The next move is yours.
         </h2>
         <p className="font-sans text-lg md:text-xl text-muted text-center max-w-[40ch] mb-12">
@@ -15,7 +14,7 @@ export function JoinFooter() {
         </p>
         
         <EventActions />
-      </BorderGlow>
+      </div>
 
       <footer className="w-full border-t border-border-subtle bg-background py-12 md:py-16">
         <div className="max-w-[1280px] w-full mx-auto px-5 md:px-8 lg:px-16 flex flex-col md:flex-row justify-between items-center md:items-start gap-8">

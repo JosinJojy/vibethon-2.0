@@ -4,7 +4,6 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'motion/react';
 import { eventConfig } from '@/content/event';
 import { formatEventDate } from '@/lib/dates';
-import BorderGlow from '@/components/effects/BorderGlow';
 
 const milestones = [
   {
@@ -58,8 +57,8 @@ function TimelineNode({
       <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-surface border-[3px] border-border-subtle z-10 transition-colors duration-200" style={{ borderColor: isInView ? 'var(--color-accent-red)' : 'var(--color-border-subtle)' }} />
 
       {/* Content Block */}
-      <BorderGlow className="timeline-card glass-panel pl-8 md:pl-0 w-full md:w-[calc(50%-48px)]" contentClassName={`flex flex-col ${isEven ? 'md:items-end md:text-right' : 'md:items-start md:text-left'}`}>
-        <span className="font-mono text-[11px] tracking-[0.12em] text-muted mb-2 uppercase">
+      <div className={`timeline-card pl-8 md:pl-0 w-full md:w-[calc(50%-48px)] flex flex-col ${isEven ? 'md:items-end md:text-right' : 'md:items-start md:text-left'}`}>
+        <span className="font-mono text-[11px] font-bold tracking-[0.16em] text-accent-red mb-2 uppercase">
           {formatEventDate(milestone.date)}
         </span>
         <h4 className="font-sans text-xl font-semibold text-foreground mb-2">
@@ -68,7 +67,7 @@ function TimelineNode({
         <p className="font-sans text-[15px] text-muted max-w-[380px]">
           {milestone.desc}
         </p>
-      </BorderGlow>
+      </div>
     </li>
   );
 }
@@ -83,11 +82,11 @@ export function EventTimeline() {
   const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <section ref={containerRef} id="timeline" className="w-full bg-background py-24 md:py-32 overflow-hidden">
+    <section ref={containerRef} id="timeline" className="w-full py-28 md:py-40 overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-5 md:px-8 lg:px-16 flex flex-col items-center">
         
         <div className="text-center mb-16 md:mb-24">
-          <h2 className="font-display text-[clamp(40px,5.5vw,80px)] leading-[0.95] tracking-tight text-foreground uppercase mb-4">
+          <h2 className="font-display text-[clamp(40px,5.5vw,80px)] leading-[0.95] text-foreground uppercase mb-4">
             The operation timeline
           </h2>
         </div>

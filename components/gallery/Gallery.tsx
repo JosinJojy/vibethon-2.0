@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { GalleryItem } from '@/content/assets';
 import { Lightbox } from './Lightbox';
-import BorderGlow from '@/components/effects/BorderGlow';
 
 export function Gallery({ images }: { images: GalleryItem[] }) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -82,7 +81,7 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
             }
 
             return (
-              <BorderGlow key={img.id} className={`${colSpan} ${rowSpan} min-h-0`} contentClassName="h-full" glowRadius={18}>
+              <div key={img.id} className={`${colSpan} ${rowSpan} min-h-0`}>
               <button
                 className="relative group w-full h-full focus:outline-none focus:ring-4 focus:ring-accent-red focus:ring-offset-2 focus:ring-offset-background overflow-hidden"
                 onClick={() => openLightbox(i)}
@@ -97,7 +96,7 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
                 <div className="absolute inset-0 bg-background/0 group-hover:bg-background/10 transition-colors duration-300" />
                 <div className="absolute inset-0 bg-[#3B2C24]/10 mix-blend-color pointer-events-none" /> {/* Mild consistent grade */}
               </button>
-              </BorderGlow>
+              </div>
             );
           })}
         </div>
@@ -109,7 +108,7 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
             className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-3 pb-4"
           >
             {images.map((img, i) => (
-              <BorderGlow key={img.id} className="snap-start flex-none w-[86vw] aspect-4/3" contentClassName="h-full" glowRadius={18}>
+              <div key={img.id} className="snap-start flex-none w-[86vw] aspect-4/3">
               <button
                 className="relative w-full h-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-accent-red"
                 onClick={() => openLightbox(i)}
@@ -123,7 +122,7 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
                 />
                 <div className="absolute inset-0 bg-[#3B2C24]/10 mix-blend-color pointer-events-none" />
               </button>
-              </BorderGlow>
+              </div>
             ))}
           </div>
           

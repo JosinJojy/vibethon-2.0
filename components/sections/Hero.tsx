@@ -49,7 +49,6 @@ export function Hero() {
       </motion.div>
       <div className="hero-shade" aria-hidden="true" />
       <div className="hero-grain" aria-hidden="true" />
-      <div className="hero-frame" aria-hidden="true"><span /><span /><span /><span /></div>
 
       <div className="hero-shell">
         <motion.div className="hero-center" style={{ y: contentY, opacity: contentOpacity }}>
@@ -83,32 +82,21 @@ export function Hero() {
 
           <motion.p {...enter(0.75)} className="hero-es font-serif italic">La casa del código</motion.p>
           <motion.p {...enter(0.85)} className="hero-sub font-mono">
-            {eventConfig.durationHours}-hour {eventConfig.mode.toLowerCase()} vibe coding hackathon
+            {eventConfig.durationHours}-hour vibe coding hackathon
             <span aria-hidden="true">/</span>
-            {organizer.shortName}, {organizer.city}
+            {formatDotDate(eventConfig.startsAt)}, {formatClock(eventConfig.startsAt)} IST
+            <span aria-hidden="true">/</span>
+            {organizer.shortName}
           </motion.p>
+          <motion.div {...enter(0.95)} className="hero-cta">
+            <EventActions className="hero-actions" />
+          </motion.div>
         </motion.div>
 
-        <motion.div {...enter(1, 24)} className="hero-dock">
-          <div className="hero-dock-cell hero-dock-date">
-            <span className="hero-dock-label font-mono">Día del golpe</span>
-            <strong className="font-display">{formatDotDate(eventConfig.startsAt)}</strong>
-            <span className="hero-dock-meta font-mono">
-              {formatClock(eventConfig.startsAt)} — {formatClock(eventConfig.endsAt)} IST
-            </span>
-          </div>
-          <div className="hero-dock-cell hero-dock-count">
-            <Countdown target={eventConfig.countdownTarget} />
-          </div>
-          <div className="hero-dock-cell hero-dock-cta">
-            <EventActions className="hero-actions" />
-          </div>
+        <motion.div {...enter(1.1, 0)} className="hero-bottom">
+          <Countdown target={eventConfig.countdownTarget} className="countdown--inline" />
         </motion.div>
       </div>
-
-      <a href="#prizes" className="hero-scroll font-mono" data-visible={revealed}>
-        Scroll <span aria-hidden="true" />
-      </a>
     </section>
   );
 }

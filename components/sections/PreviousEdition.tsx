@@ -1,61 +1,37 @@
 import { previousEdition } from '@/content/event';
 import { gallery } from '@/content/assets';
 import { Gallery } from '../gallery/Gallery';
-import BorderGlow from '@/components/effects/BorderGlow';
 
 export function PreviousEdition() {
+  const stats = [
+    { value: previousEdition.stats.registered, label: 'Registered' },
+    { value: previousEdition.stats.shortlisted, label: 'Shortlisted' },
+    { value: previousEdition.prizes.total, label: 'Prize pool' },
+  ];
+
   return (
-    <section id="glimpses" className="w-full bg-background py-24 md:py-32 border-t border-border-subtle">
+    <section id="glimpses" className="w-full py-28 md:py-40">
       <div className="max-w-[1280px] mx-auto px-5 md:px-8 lg:px-16">
         
-        <div className="mb-16 md:mb-24 flex flex-col items-center text-center">
-          <h2 className="font-display text-[clamp(40px,5.5vw,80px)] leading-[0.95] tracking-tight text-foreground uppercase mb-4">
+        <div className="mb-14 md:mb-20 flex flex-col items-center text-center">
+          <h2 className="font-display text-[clamp(40px,5.5vw,80px)] leading-[0.95] text-foreground uppercase mb-4">
             Previously, at VIBETHON
           </h2>
-          <p className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-muted uppercase mb-8">
+          <p className="font-mono text-[11px] md:text-[12px] font-bold tracking-[0.2em] text-muted uppercase mb-8">
             VIBETHON 2025 / 20-21 September / MACE
           </p>
-          <p className="font-sans text-base md:text-lg leading-relaxed text-muted max-w-[64ch] mb-12">
+          <p className="font-sans text-base md:text-lg leading-relaxed text-muted max-w-[60ch] mb-14">
             {previousEdition.description}
           </p>
 
-          <div className="legacy-stats w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 border-y border-border-subtle py-8 md:py-12">
-            
-            <BorderGlow className="glass-panel legacy-stat" contentClassName="flex flex-col items-center">
-              <span className="font-display text-6xl md:text-8xl text-foreground">
-                {previousEdition.stats.registered}
-              </span>
-              <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-accent-red mt-2 uppercase">
-                Registered Participants
-              </span>
-            </BorderGlow>
-            
-            <BorderGlow className="glass-panel legacy-stat" contentClassName="flex flex-col items-center">
-              <span className="font-display text-6xl md:text-8xl text-foreground">
-                {previousEdition.stats.shortlisted}
-              </span>
-              <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-accent-red mt-2 uppercase">
-                Shortlisted Participants
-              </span>
-            </BorderGlow>
-            
-          </div>
-
-          <div className="mt-8 flex flex-col items-center">
-            <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-muted uppercase mb-2">
-              2025 Prize Pool
-            </span>
-            <div className="flex items-baseline gap-4 mb-2">
-              <span className="font-sans font-semibold text-lg text-foreground">{previousEdition.prizes.total}</span>
-            </div>
-            <div className="flex gap-3 text-sm font-sans text-muted">
-              <span>{previousEdition.prizes.first}</span>
-              <span className="opacity-40">/</span>
-              <span>{previousEdition.prizes.second}</span>
-              <span className="opacity-40">/</span>
-              <span>{previousEdition.prizes.third}</span>
-            </div>
-          </div>
+          <dl className="w-full max-w-3xl grid grid-cols-3">
+            {stats.map(stat => (
+              <div key={stat.label} className="legacy-stat flex flex-col-reverse items-center">
+                <dt className="font-mono text-[10px] md:text-[12px] font-bold tracking-[0.18em] text-accent-red mt-3 uppercase">{stat.label}</dt>
+                <dd className="font-display text-[34px] md:text-7xl leading-none text-foreground">{stat.value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
 
         <Gallery images={gallery} />

@@ -7,7 +7,7 @@ export function JoinFooter() {
   return (
     <section id="join" className="w-full bg-[#141416] flex flex-col pt-24 md:pt-32">
       <BorderGlow className="join-panel max-w-[1280px] w-full mx-auto px-5 md:px-8 lg:px-16 flex-1 py-24 md:py-32" contentClassName="flex flex-col items-center">
-        <h2 className="font-bebas text-[clamp(40px,6vw,96px)] leading-[0.9] tracking-tight text-foreground uppercase mb-6 text-center max-w-[15ch]">
+        <h2 className="font-display text-[clamp(40px,6vw,96px)] leading-[0.9] tracking-tight text-foreground uppercase mb-6 text-center max-w-[15ch]">
           The next move is yours.
         </h2>
         <p className="font-sans text-lg md:text-xl text-muted text-center max-w-[40ch] mb-12">
@@ -25,7 +25,7 @@ export function JoinFooter() {
               // eslint-disable-next-line @next/next/no-img-element
               <img src={assets.brandLogo.src} alt={`${eventConfig.organizer.name} Logo`} className="h-8 mb-2" />
             ) : (
-              <span className="font-bebas text-2xl tracking-wide text-foreground mb-2">{eventConfig.organizer.name}</span>
+              <span className="font-display text-2xl tracking-wide text-foreground mb-2">{eventConfig.organizer.name}</span>
             )}
             <p className="font-sans text-sm text-muted text-center md:text-left max-w-[30ch]">
               Organized by {eventConfig.organizer.name}, the coding club at {eventConfig.organizer.institution}.
@@ -38,18 +38,18 @@ export function JoinFooter() {
           <div className="flex flex-col items-center md:items-end gap-6">
             <div className="flex gap-6">
               {eventConfig.contactEmail && (
-                <a href={`mailto:${eventConfig.contactEmail}`} className="font-sans text-sm text-muted hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-foreground rounded">
+                <a href={`mailto:${eventConfig.contactEmail}`} className="font-sans text-sm text-muted hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-foreground">
                   Contact
                 </a>
               )}
               {eventConfig.socialLinks.map(link => (
-                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="font-sans text-sm text-muted hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-foreground rounded">
+                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="font-sans text-sm text-muted hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-foreground">
                   {link.label}
                 </a>
               ))}
             </div>
             
-            <a href="#hero" className="font-mono text-xs tracking-widest text-muted hover:text-foreground uppercase flex items-center gap-2 transition-colors focus:outline-none focus:ring-2 focus:ring-foreground rounded p-1">
+            <a href="#hero" className="font-mono text-xs tracking-widest text-muted hover:text-foreground uppercase flex items-center gap-2 transition-colors focus:outline-none focus:ring-2 focus:ring-foreground p-1">
               Back to top
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 19V5M5 12l7-7 7 7" />

@@ -2,127 +2,113 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
-import TechText from '@/components/effects/TechText';
-import TextLoop from '@/components/effects/TextLoop';
-import BorderGlow from '@/components/effects/BorderGlow';
 import { assets } from '@/content/assets';
 import { eventConfig } from '@/content/event';
+import { formatClock, formatDotDate } from '@/lib/dates';
+import { onReveal } from '@/lib/reveal';
 import { Countdown } from './Countdown';
 import { EventActions } from './EventActions';
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 export function Hero() {
   const [revealed, setRevealed] = useState(false);
-  const containerRef = useRef<HTMLElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end start'] });
-  const yParallax = useTransform(scrollYProgress, [0, 1], [0, shouldReduceMotion ? 0 : 30]);
+  const sectionRef = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] });
+  const backdropY = useTransform(scrollYProgress, [0, 1], ['0%', reduce ? '0%' : '14%']);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -90]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
 
-  useEffect(() => {
-    let hasPlayed = false;
-    try {
-      hasPlayed = sessionStorage.getItem('vibethon-intro-v1') === 'true';
-    } catch {
-      hasPlayed = true;
-    }
+  useEffect(() => onReveal(() => setRevealed(true)), []);
 
-    if (hasPlayed || window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.location.hash.length > 1 || window.scrollY >= 10) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setRevealed(true);
-      return;
-    }
-
-    const handleReveal = () => setRevealed(true);
-    window.addEventListener('vibethon-reveal', handleReveal);
-    const timer = setTimeout(handleReveal, 2200);
-    return () => {
-      window.removeEventListener('vibethon-reveal', handleReveal);
-      clearTimeout(timer);
-    };
-  }, []);
-
-  const revealMotion = (delay = 0) => ({
-    initial: shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 },
+  const enter = (delay: number, y = 18) => ({
+    initial: { opacity: 0, y: reduce ? 0 : y },
     animate: revealed ? { opacity: 1, y: 0 } : undefined,
-    transition: { duration: 0.72, delay, ease: [0.22, 1, 0.36, 1] as const },
+    transition: { duration: reduce ? 0 : 0.9, delay: reduce ? 0 : delay, ease: EASE },
   });
 
+  const { brand, organizer } = eventConfig;
+
   return (
-    <section ref={containerRef} id="hero" className="hero-stage relative overflow-hidden">
-      <motion.div className="hero-backdrop absolute inset-0 select-none" style={{ y: yParallax }} aria-hidden="true">
-        {assets.heroMobile.available && assets.heroDesktop.available && (
-          <picture>
-            <source media="(min-width: 768px)" srcSet={assets.heroDesktop.src || ''} />
-            <img src={assets.heroMobile.src || ''} alt="" className="h-full w-full object-cover object-center" decoding="sync" fetchPriority="high" />
-          </picture>
-        )}
+    <section ref={sectionRef} id="hero" className="hero">
+      <motion.div className="hero-backdrop" style={{ y: backdropY }} aria-hidden="true">
+        <motion.div
+          className="hero-backdrop-media"
+          initial={{ opacity: 0, scale: reduce ? 1 : 1.2 }}
+          animate={revealed ? { opacity: 1, scale: 1 } : undefined}
+          transition={{ duration: reduce ? 0 : 2.6, ease: EASE }}
+        >
+          {assets.heroMobile.available && assets.heroDesktop.available && (
+            <picture>
+              <source media="(min-width: 768px)" srcSet={assets.heroDesktop.src || ''} />
+              <img src={assets.heroMobile.src || ''} alt="" decoding="sync" fetchPriority="high" />
+            </picture>
+          )}
+        </motion.div>
       </motion.div>
-      <div className="hero-shell relative z-10 mx-auto w-full">
-        <div className="hero-main">
-          <motion.p {...revealMotion(0)} className="hero-kicker font-mono uppercase">
-            ENCIDE PRESENTS <span aria-hidden="true">/</span> 16 OCTOBER 2026
-          </motion.p>
-          <motion.h1 {...revealMotion(0.08)} className="hero-tech-title font-bebas" aria-label={eventConfig.brand.name}>
-            <span className="hero-wordmark-fallback" aria-hidden="true">{eventConfig.brand.name}</span>
-            <span className="hero-tech-canvas" aria-hidden="true">
-              <TechText
-                text={eventConfig.brand.name}
-                fontWeight={400}
-                fontSize={280}
-                letterSpacing={-0.018}
-                color="#fff1e5"
-                accentColor="#fc5e68"
-                reveal="letter"
-                dashLength={5}
-                dashGap={3}
-                specks={9}
-                speed={0.62}
-              />
+      <div className="hero-shade" aria-hidden="true" />
+      <div className="hero-grain" aria-hidden="true" />
+      <div className="hero-frame" aria-hidden="true"><span /><span /><span /><span /></div>
+
+      <div className="hero-shell">
+        <motion.div className="hero-center" style={{ y: contentY, opacity: contentOpacity }}>
+          <motion.p {...enter(0.05)} className="hero-kicker font-mono">{organizer.name} presenta</motion.p>
+
+          <h1 className="hero-title font-display" aria-label={`${brand.name} ${brand.edition}`}>
+            <span className="hero-title-word" aria-hidden="true">
+              {brand.name.split('').map((char, i) => (
+                <span key={i} className="hero-title-mask">
+                  <motion.span
+                    className="hero-title-char"
+                    initial={{ y: reduce ? 0 : '108%', opacity: reduce ? 0 : 1 }}
+                    animate={revealed ? { y: 0, opacity: 1 } : undefined}
+                    transition={{ duration: reduce ? 0 : 1.1, delay: reduce ? 0 : 0.15 + i * 0.055, ease: EASE }}
+                  >
+                    {char}
+                  </motion.span>
+                </span>
+              ))}
             </span>
-          </motion.h1>
-          <motion.div {...revealMotion(0.16)} className="hero-message">
-            <p className="hero-tagline font-bebas uppercase"><span>2.0</span> Eight hours. One big idea.</p>
-            <p className="hero-summary">An on-site vibe coding hackathon at MACE, Kothamangalam.</p>
-            {eventConfig.motto && <p className="hero-motto">{eventConfig.motto}</p>}
-          </motion.div>
-
-          <motion.div {...revealMotion(0.24)} className="hero-control-wrap">
-            <BorderGlow
-              className="hero-control glass-panel"
-              backgroundColor="#151116"
-              borderRadius={24}
-              glowColor="355 88 66"
-              colors={['#9c2636', '#fa6669', '#ffc1ab']}
-              glowIntensity={0.7}
-              glowRadius={28}
-              edgeSensitivity={24}
+            <motion.span
+              className="hero-stamp"
+              aria-hidden="true"
+              initial={{ opacity: 0, scale: reduce ? 1 : 2.4, rotate: reduce ? -9 : -22 }}
+              animate={revealed ? { opacity: 1, scale: 1, rotate: -9 } : undefined}
+              transition={reduce ? { duration: 0 } : { delay: 0.85, type: 'spring', stiffness: 520, damping: 24 }}
             >
-              <Countdown target={eventConfig.countdownTarget} />
-              <EventActions className="hero-control-actions" />
-            </BorderGlow>
-          </motion.div>
-        </div>
+              {brand.edition}
+            </motion.span>
+          </h1>
 
-        <motion.div {...revealMotion(0.38)} className="hero-base-line font-mono uppercase">
-          <div className="hero-facts-loop" aria-label={`${eventConfig.durationHours} hours. ${eventConfig.mode}. ${eventConfig.organizer.shortName}, ${eventConfig.organizer.city}.`}>
-            <TextLoop
-              text={`${eventConfig.durationHours} HOURS ✦ ${eventConfig.mode} ✦ ${eventConfig.organizer.shortName}, ${eventConfig.organizer.city}`}
-              shape="line"
-              compact
-              speed={52}
-              separator="✦"
-              fontSize={27}
-              fontWeight={600}
-              letterSpacing={2}
-              color="#f4ded9"
-              ribbon
-              ribbonColor="#5f1b29"
-              ribbonWidth={38}
-              className="hero-facts-ribbon"
-            />
+          <motion.p {...enter(0.75)} className="hero-es font-serif italic">La casa del código</motion.p>
+          <motion.p {...enter(0.85)} className="hero-sub font-mono">
+            {eventConfig.durationHours}-hour {eventConfig.mode.toLowerCase()} vibe coding hackathon
+            <span aria-hidden="true">/</span>
+            {organizer.shortName}, {organizer.city}
+          </motion.p>
+        </motion.div>
+
+        <motion.div {...enter(1, 24)} className="hero-dock">
+          <div className="hero-dock-cell hero-dock-date">
+            <span className="hero-dock-label font-mono">Día del golpe</span>
+            <strong className="font-display">{formatDotDate(eventConfig.startsAt)}</strong>
+            <span className="hero-dock-meta font-mono">
+              {formatClock(eventConfig.startsAt)} — {formatClock(eventConfig.endsAt)} IST
+            </span>
           </div>
-          <a href="#prizes" className="hero-scroll-link">Explore the mission <span aria-hidden="true">↓</span></a>
+          <div className="hero-dock-cell hero-dock-count">
+            <Countdown target={eventConfig.countdownTarget} />
+          </div>
+          <div className="hero-dock-cell hero-dock-cta">
+            <EventActions className="hero-actions" />
+          </div>
         </motion.div>
       </div>
+
+      <a href="#prizes" className="hero-scroll font-mono" data-visible={revealed}>
+        Scroll <span aria-hidden="true" />
+      </a>
     </section>
   );
 }

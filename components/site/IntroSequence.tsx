@@ -1,159 +1,228 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { motion } from 'motion/react';
+import { eventConfig, prizes } from '@/content/event';
+import { announceReveal } from '@/lib/reveal';
+
+const CREW = ['TOKIO', 'BERLÍN', 'NAIROBI', 'RÍO', 'DENVER', 'HELSINKI', 'MOSCÚ', 'LISBOA', 'PALERMO', 'BOGOTÁ', 'MANILA', 'ESTOCOLMO'];
+const STEPS = [
+  { at: 0, es: 'Reuniendo a la banda', en: 'Assembling the crew' },
+  { at: 24, es: 'Burlando la seguridad', en: 'Bypassing security' },
+  { at: 50, es: `Imprimiendo ${prizes.total}`, en: 'Printing the prize pool' },
+  { at: 76, es: 'Abriendo la bóveda', en: 'Cracking the vault' },
+  { at: 100, es: 'Bóveda abierta', en: 'Vault open' },
+];
+// A stuttered curve makes the counter feel like real work instead of a linear tween.
+const CURVE: [number, number][] = [[0, 0], [0.16, 19], [0.26, 24], [0.44, 47], [0.52, 51], [0.72, 78], [0.82, 83], [1, 100]];
+const COMBINATION = [-118, 154, -62];
+const TICKS = Array.from({ length: 100 }, (_, i) => i);
+const GRIPS = Array.from({ length: 48 }, (_, i) => i);
+const DURATION = 3800;
+const REDUCED_DURATION = 1100;
+const MAX_WAIT = 9000;
+const HOLD = 700;
+const EXIT = 1100;
+const DOOR_EASE = [0.76, 0, 0.24, 1] as const;
+
+type Phase = 'loading' | 'open' | 'exit' | 'done';
+
+function curve(t: number) {
+  for (let i = 1; i < CURVE.length; i++) {
+    const [t1, v1] = CURVE[i];
+    if (t <= t1) {
+      const [t0, v0] = CURVE[i - 1];
+      return v0 + (v1 - v0) * ((t - t0) / (t1 - t0));
+    }
+  }
+  return 100;
+}
+
+function dialAngle(progress: number) {
+  const span = 100 / 3;
+  const segment = Math.min(Math.floor(progress / span), 2);
+  const local = (progress - segment * span) / span;
+  const eased = local < 0.85 ? 1 - Math.pow(1 - local / 0.85, 3) : 1;
+  const from = segment === 0 ? 0 : COMBINATION[segment - 1];
+  return from + (COMBINATION[segment] - from) * eased;
+}
+
+function stepFor(progress: number) {
+  let index = 0;
+  STEPS.forEach((step, i) => { if (progress >= step.at) index = i; });
+  return index;
+}
 
 export function IntroSequence() {
-  const [state, setState] = useState<'idle' | 'arming' | 'unlocking' | 'reveal' | 'complete'>('idle');
-  const [shouldRender, setShouldRender] = useState(false);
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const finishRef = useRef<(() => void) | null>(null);
+  const [phase, setPhase] = useState<Phase>('loading');
+  const [reduced, setReduced] = useState(false);
+  const [frame, setFrame] = useState({ progress: 0, elapsed: 0, step: 0, stepAt: 0 });
+  const skipRef = useRef<() => void>(() => {});
 
   useEffect(() => {
-    // Only run on client after hydration
-    if (typeof window === 'undefined') return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setReduced(reduce);
+    const duration = reduce ? REDUCED_DURATION : DURATION;
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const hasHash = window.location.hash.length > 1;
-    const isScrolled = window.scrollY >= 10;
-    
-    let hasPlayed = false;
-    try {
-      hasPlayed = sessionStorage.getItem('vibethon-intro-v1') === 'true';
-    } catch {
-      // Storage errors mean skip intro
-      hasPlayed = true;
-    }
+    let pageReady = document.readyState === 'complete';
+    let fontsReady = !document.fonts;
+    const markPageReady = () => { pageReady = true; };
+    window.addEventListener('load', markPageReady, { once: true });
+    document.fonts?.ready.then(() => { fontsReady = true; });
 
-    if (prefersReducedMotion || hasHash || isScrolled || hasPlayed) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setState('complete');
-      return;
-    }
-
-    setShouldRender(true);
-    
-    // Set flag immediately so reload skips
-    try {
-      sessionStorage.setItem('vibethon-intro-v1', 'true');
-    } catch { /* ignore */ }
-  }, []);
-
-  useEffect(() => {
-    if (!shouldRender) return;
-
-    const dialog = dialogRef.current;
-    if (dialog && !dialog.open) {
-      dialog.showModal();
-    }
-    
-    document.body.style.overflow = 'hidden';
-
+    const start = performance.now();
+    const timers: number[] = [];
+    let raf = 0;
+    let last = start;
+    let shown = 0;
     let finished = false;
-    const finish = () => {
+    let step = 0;
+    let stepAt = 0;
+
+    const finish = (fast: boolean) => {
       if (finished) return;
       finished = true;
-      document.body.style.overflow = '';
-      if (dialog && dialog.open) {
-        dialog.close();
-      }
-      setState('complete');
-      setShouldRender(false);
-      window.dispatchEvent(new Event('vibethon-reveal'));
-      // Optional: focus main heading
-      const h1 = document.querySelector('h1');
-      if (h1) {
-        h1.tabIndex = -1;
-        h1.focus({ preventScroll: true });
-      }
+      setPhase('open');
+      timers.push(window.setTimeout(() => {
+        cancelAnimationFrame(raf);
+        setPhase('exit');
+        announceReveal();
+        timers.push(window.setTimeout(() => setPhase('done'), EXIT + 150));
+      }, fast ? 250 : HOLD));
     };
-    finishRef.current = finish;
 
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') finish();
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      if (!finished) {
+        const loaded = (pageReady && fontsReady) || elapsed > MAX_WAIT;
+        const target = Math.min(curve(Math.min(elapsed / duration, 1)), loaded ? 100 : 92);
+        shown += (target - shown) * Math.min(1, (now - last) / 70);
+        if (target >= 100 && shown > 99.5) finish(reduce);
+      }
+      last = now;
+      const progress = finished ? 100 : shown;
+      const nextStep = stepFor(progress);
+      if (nextStep !== step) {
+        step = nextStep;
+        stepAt = elapsed;
+      }
+      setFrame({ progress, elapsed, step, stepAt });
+      raf = requestAnimationFrame(tick);
     };
-    window.addEventListener('keydown', handleEscape);
+    raf = requestAnimationFrame(tick);
 
-    // Timeline based on requirements
-    // 0-350ms: arming (red indicator fades in, INITIALIZING)
-    // 350-900ms: access sequence (horizontal scan)
-    // 900-1400ms: unlocking (two CSS shutter outlines separate by 18px, VAULT UNLOCKED)
-    // 1400-1900ms: reveal (overlay fades out)
-    // <= 2200ms: complete
-
-    const t1 = setTimeout(() => setState('arming'), 0);
-    const t2 = setTimeout(() => setState('unlocking'), 350);
-    const t3 = setTimeout(() => setState('reveal'), 900);
-    const t4 = setTimeout(finish, 1900); // 1400 to start fade out, done at 1900
+    skipRef.current = () => finish(true);
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') finish(true); };
+    window.addEventListener('keydown', handleKey);
 
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
-      window.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = '';
-      if (dialog?.open) dialog.close();
-      finishRef.current = null;
+      cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+      window.removeEventListener('load', markPageReady);
+      window.removeEventListener('keydown', handleKey);
     };
-  }, [shouldRender]);
+  }, []);
 
-  useEffect(() => {
-    if (state === 'reveal') {
-      window.dispatchEvent(new Event('vibethon-reveal'));
-    }
-  }, [state]);
+  if (phase === 'done') return null;
 
-  if (!shouldRender) return null;
-
-  let label = '';
-  if (state === 'idle' || state === 'arming') label = 'INITIALIZING';
-  else if (state === 'unlocking') label = 'ACCESS SEQUENCE';
-  else if (state === 'reveal') label = 'VAULT UNLOCKED';
-
-  const opacityClass = state === 'reveal' ? 'opacity-0' : 'opacity-100';
+  const exiting = phase === 'exit';
+  const span = 100 / 3;
+  const unlocked = [0, 1, 2].filter(i => frame.progress >= (i + 0.85) * span).length;
+  const angle = reduced ? 0 : dialAngle(frame.progress);
+  const crew = phase === 'loading' && !reduced ? CREW[Math.floor(frame.elapsed / 130) % CREW.length] : 'EL PROFESOR';
+  const status = STEPS[frame.step];
+  const typed = status.es.slice(0, Math.max(0, Math.floor((frame.elapsed - frame.stepAt) / 26)));
+  const doorTransition = { duration: reduced ? 0.3 : EXIT / 1000, ease: DOOR_EASE, delay: reduced ? 0 : 0.12 };
 
   return (
-    <dialog
-      ref={dialogRef}
-      className={`fixed inset-0 w-full h-full p-0 m-0 bg-transparent border-none z-[100] transition-opacity duration-500 ease-out ${opacityClass} flex flex-col items-center justify-center`}
-      aria-label="Event introduction sequence"
-    >
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm pointer-events-none" />
-      
-      {/* Intro Content */}
-      <div className="relative z-10 flex flex-col items-center">
-        {/* Decorative elements */}
-        <div className="relative w-48 h-12 mb-8 flex items-center justify-center">
-          {/* Shutters outline */}
-          <div 
-            className="absolute inset-0 border border-border-subtle transition-transform duration-500"
-            style={{ transform: state === 'reveal' ? 'translateY(-18px)' : 'translateY(0)' }}
-          />
-          <div 
-            className="absolute inset-0 border border-border-subtle transition-transform duration-500"
-            style={{ transform: state === 'reveal' ? 'translateY(18px)' : 'translateY(0)' }}
-          />
-          
-          {/* Horizontal scan line */}
-          {(state === 'unlocking' || state === 'arming') && (
-            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-accent-red animate-pulse" />
-          )}
-          
-          {/* Red indicator dot */}
-          <div className={`w-2 h-2 rounded-full bg-accent-red transition-opacity duration-350 ${state === 'idle' ? 'opacity-0' : 'opacity-100'}`} />
-        </div>
-
-        <p className="font-mono text-xs tracking-[0.2em] text-foreground uppercase" aria-live="polite">
-          {label}
-        </p>
-      </div>
-
-      <button
-        onClick={() => finishRef.current?.()}
-        className="absolute bottom-8 font-mono text-[10px] tracking-widest text-muted uppercase px-4 py-2 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-foreground rounded"
+    <>
+      <noscript><style>{'.heist-loader{display:none!important}'}</style></noscript>
+      <div
+        className={`heist-loader${exiting ? ' is-exiting' : ''}`}
+        data-phase={phase}
+        role="status"
+        aria-live="polite"
+        aria-busy={!exiting}
+        aria-label={`Loading ${eventConfig.brand.name} ${eventConfig.brand.edition}`}
       >
-        Skip sequence
-      </button>
-    </dialog>
+        <motion.div
+          className="heist-door heist-door--left"
+          initial={false}
+          animate={exiting ? (reduced ? { opacity: 0 } : { x: '-101%' }) : undefined}
+          transition={doorTransition}
+        />
+        <motion.div
+          className="heist-door heist-door--right"
+          initial={false}
+          animate={exiting ? (reduced ? { opacity: 0 } : { x: '101%' }) : undefined}
+          transition={doorTransition}
+        />
+        <motion.div
+          className="heist-seam"
+          initial={{ scaleY: 0, opacity: 0 }}
+          animate={exiting ? { scaleY: 1, opacity: 0 } : phase === 'open' ? { scaleY: 1, opacity: 1 } : undefined}
+          transition={{ duration: exiting ? 0.35 : 0.55, ease: DOOR_EASE }}
+        />
+
+        <motion.div className="heist-ui" initial={false} animate={{ opacity: exiting ? 0 : 1 }} transition={{ duration: 0.25 }}>
+          <div className="heist-ui-top">
+            <div>
+              <p className="heist-brand font-display">{eventConfig.brand.name} <span>{eventConfig.brand.edition}</span></p>
+              <p className="heist-brand-es font-serif italic">La casa del código</p>
+            </div>
+            <div className="heist-file font-mono">
+              <p>Exp. Nº 002/{eventConfig.brand.year}</p>
+              <p className="heist-classified">Confidencial</p>
+            </div>
+          </div>
+
+          <div className="heist-center" aria-hidden="true">
+            <svg className="heist-dial" viewBox="0 0 240 240">
+              <circle className="heist-dial-ring" cx="120" cy="120" r="117" />
+              <g style={{ transform: `rotate(${angle}deg)`, transformOrigin: '120px 120px' }}>
+                {TICKS.map(i => (
+                  <line
+                    key={i}
+                    className={i % 10 === 0 ? 'is-major' : undefined}
+                    x1="120" y1={i % 10 === 0 ? 10 : i % 5 === 0 ? 14 : 17} x2="120" y2="24"
+                    transform={`rotate(${i * 3.6} 120 120)`}
+                  />
+                ))}
+                {TICKS.filter(i => i % 10 === 0).map(i => (
+                  <text key={i} x="120" y="40" textAnchor="middle" transform={`rotate(${i * 3.6} 120 120)`}>{i}</text>
+                ))}
+                <circle className="heist-dial-face" cx="120" cy="120" r="68" />
+                {GRIPS.map(i => (
+                  <rect key={i} className="heist-dial-grip" x="119" y="53" width="2" height="7" transform={`rotate(${i * 7.5} 120 120)`} />
+                ))}
+              </g>
+              <path className="heist-dial-pointer" d="M120 26 L114 14 H126 Z" />
+              <circle className="heist-dial-hub" cx="120" cy="120" r="44" />
+              <text className="heist-dial-hub-text" x="120" y="132" textAnchor="middle">{eventConfig.brand.edition}</text>
+            </svg>
+            <div className="heist-tumblers">
+              {[0, 1, 2].map(i => <span key={i} className={i < unlocked ? 'is-on' : undefined} />)}
+            </div>
+            <p className="heist-crew-label font-mono">Llamando a</p>
+            <p className="heist-crew font-display">{crew}</p>
+          </div>
+
+          <div className="heist-ui-bottom">
+            <div className="heist-status font-mono">
+              <p className="heist-status-es"><span>&gt;</span> {typed}<i className="heist-caret" /></p>
+              <p className="heist-status-en">{status.en}</p>
+            </div>
+            <p className="heist-pct font-display">{String(Math.floor(frame.progress)).padStart(3, '0')}<span>%</span></p>
+          </div>
+
+          <button type="button" className="heist-skip font-mono" onClick={() => skipRef.current()}>
+            Saltar / Skip
+          </button>
+        </motion.div>
+
+        <div className="heist-progress" style={{ transform: `scaleX(${frame.progress / 100})` }} />
+      </div>
+    </>
   );
 }

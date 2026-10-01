@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'motion/react';
 import { prizes } from '@/content/event';
-import { assets } from '@/content/assets';
 import BorderGlow from '@/components/effects/BorderGlow';
 
 export function PrizeReveal() {
@@ -21,18 +20,6 @@ export function PrizeReveal() {
 
   return (
     <section ref={sectionRef} id="prizes" className="relative w-full bg-[#141416] py-24 md:py-32 overflow-hidden">
-      {/* Background Vault Chamber */}
-      <div className="absolute inset-0 z-0 select-none opacity-20 mix-blend-luminosity">
-        {assets.vaultChamber.available && assets.vaultChamber.src && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img 
-            src={assets.vaultChamber.src} 
-            alt="" 
-            className="w-full h-full object-cover object-center"
-          />
-        )}
-      </div>
-
       {/* Decorative Door Panels */}
       <div className="absolute inset-0 z-0 flex justify-center pointer-events-none">
         <motion.div 
@@ -61,7 +48,7 @@ export function PrizeReveal() {
           transition={{ duration: 0.55, ease: 'easeOut', delay: 0.1 }}
           className="flex flex-col items-center"
         >
-          <div className="prize-total font-bebas text-[clamp(72px,13vw,176px)] leading-none tracking-tight text-foreground">
+          <div className="prize-total font-display text-[clamp(72px,13vw,176px)] leading-none tracking-tight text-foreground">
             {prizes.total}
           </div>
           <div className="font-sans text-sm md:text-base font-semibold tracking-wider text-accent-red mt-4 uppercase">
@@ -74,17 +61,17 @@ export function PrizeReveal() {
           
           <div className="flex-1 py-8 md:py-10 flex flex-row md:flex-col items-center justify-between md:justify-center px-4 md:px-0">
             <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-muted uppercase md:mb-4">First</span>
-            <span className="font-bebas text-4xl md:text-6xl text-foreground">{prizes.first}</span>
+            <span className="font-display text-4xl md:text-6xl text-foreground">{prizes.first}</span>
           </div>
           
           <div className="flex-1 py-8 md:py-10 flex flex-row md:flex-col items-center justify-between md:justify-center px-4 md:px-0">
             <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-muted uppercase md:mb-4">Second</span>
-            <span className="font-bebas text-3xl md:text-5xl text-foreground">{prizes.second}</span>
+            <span className="font-display text-3xl md:text-5xl text-foreground">{prizes.second}</span>
           </div>
           
           <div className="flex-1 py-8 md:py-10 flex flex-row md:flex-col items-center justify-between md:justify-center px-4 md:px-0">
             <span className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-muted uppercase md:mb-4">Third</span>
-            <span className="font-bebas text-3xl md:text-5xl text-foreground">{prizes.third}</span>
+            <span className="font-display text-3xl md:text-5xl text-foreground">{prizes.third}</span>
           </div>
           
         </BorderGlow>

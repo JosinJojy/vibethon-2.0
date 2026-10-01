@@ -52,10 +52,10 @@ function TimelineNode({
       className={`relative flex flex-col md:flex-row w-full mb-12 md:mb-24 last:mb-0 ${isEven ? 'md:justify-start' : 'md:justify-end'}`}
     >
       {/* Mobile Dot */}
-      <div className="absolute left-[8px] top-1 md:hidden -translate-x-[4.5px] w-[11px] h-[11px] rounded-full bg-surface border-2 border-border-subtle z-10 transition-colors duration-200" style={{ borderColor: isInView ? 'var(--color-accent-red)' : 'var(--color-border-subtle)' }} />
+      <div className="absolute left-[8px] top-1 md:hidden -translate-x-[4.5px] w-[11px] h-[11px] bg-surface border-2 border-border-subtle z-10 transition-colors duration-200" style={{ borderColor: isInView ? 'var(--color-accent-red)' : 'var(--color-border-subtle)' }} />
       
       {/* Desktop Dot */}
-      <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-surface border-[3px] border-border-subtle z-10 transition-colors duration-200" style={{ borderColor: isInView ? 'var(--color-accent-red)' : 'var(--color-border-subtle)' }} />
+      <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-surface border-[3px] border-border-subtle z-10 transition-colors duration-200" style={{ borderColor: isInView ? 'var(--color-accent-red)' : 'var(--color-border-subtle)' }} />
 
       {/* Content Block */}
       <BorderGlow className="timeline-card glass-panel pl-8 md:pl-0 w-full md:w-[calc(50%-48px)]" contentClassName={`flex flex-col ${isEven ? 'md:items-end md:text-right' : 'md:items-start md:text-left'}`}>
@@ -87,7 +87,7 @@ export function EventTimeline() {
       <div className="max-w-[1280px] mx-auto px-5 md:px-8 lg:px-16 flex flex-col items-center">
         
         <div className="text-center mb-16 md:mb-24">
-          <h2 className="font-bebas text-[clamp(40px,5.5vw,80px)] leading-[0.95] tracking-tight text-foreground uppercase mb-4">
+          <h2 className="font-display text-[clamp(40px,5.5vw,80px)] leading-[0.95] tracking-tight text-foreground uppercase mb-4">
             The operation timeline
           </h2>
         </div>

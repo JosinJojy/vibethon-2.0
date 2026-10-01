@@ -1,10 +1,24 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Inter } from "next/font/google";
+import { Anton, Courier_Prime, Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
-const bebasNeue = Bebas_Neue({
+const anton = Anton({
   weight: "400",
-  variable: "--font-bebas",
+  variable: "--font-anton",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const courierPrime = Courier_Prime({
+  weight: ["400", "700"],
+  variable: "--font-courier",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  style: ["italic"],
+  variable: "--font-playfair",
   subsets: ["latin"],
   display: "swap",
 });
@@ -28,7 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bebasNeue.variable} ${inter.variable} antialiased`}
+      className={`${anton.variable} ${courierPrime.variable} ${playfair.variable} ${inter.variable} antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground selection:bg-accent-red selection:text-white">
         <a href="#hero" className="absolute top-0 left-0 -translate-y-full focus:translate-y-0 bg-accent-red text-white px-4 py-2 z-[100] transition-transform">

@@ -82,9 +82,9 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
             }
 
             return (
-              <BorderGlow key={img.id} className={`${colSpan} ${rowSpan} min-h-0`} contentClassName="h-full" borderRadius={14} glowRadius={18}>
+              <BorderGlow key={img.id} className={`${colSpan} ${rowSpan} min-h-0`} contentClassName="h-full" glowRadius={18}>
               <button
-                className="relative group w-full h-full focus:outline-none focus:ring-4 focus:ring-accent-red focus:ring-offset-2 focus:ring-offset-background overflow-hidden rounded-[13px]"
+                className="relative group w-full h-full focus:outline-none focus:ring-4 focus:ring-accent-red focus:ring-offset-2 focus:ring-offset-background overflow-hidden"
                 onClick={() => openLightbox(i)}
                 aria-label={`View photo: ${img.alt || img.caption}`}
               >
@@ -109,9 +109,9 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
             className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-3 pb-4"
           >
             {images.map((img, i) => (
-              <BorderGlow key={img.id} className="snap-start flex-none w-[86vw] aspect-4/3" contentClassName="h-full" borderRadius={14} glowRadius={18}>
+              <BorderGlow key={img.id} className="snap-start flex-none w-[86vw] aspect-4/3" contentClassName="h-full" glowRadius={18}>
               <button
-                className="relative w-full h-full rounded-[13px] overflow-hidden focus:outline-none focus:ring-2 focus:ring-accent-red"
+                className="relative w-full h-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-accent-red"
                 onClick={() => openLightbox(i)}
                 aria-label={`View photo: ${img.alt || img.caption}`}
               >
@@ -134,7 +134,7 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
               </p>
               <div className="flex gap-2">
                 <button 
-                  className="w-10 h-10 flex items-center justify-center border border-border-subtle rounded text-foreground focus:outline-none focus:ring-2 focus:ring-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-10 h-10 flex items-center justify-center border border-border-subtle text-foreground focus:outline-none focus:ring-2 focus:ring-foreground disabled:opacity-30 disabled:cursor-not-allowed"
                   onClick={() => scrollTo(currentIndex - 1)}
                   disabled={currentIndex === 0}
                   aria-label="Previous image"
@@ -144,7 +144,7 @@ export function Gallery({ images }: { images: GalleryItem[] }) {
                   </svg>
                 </button>
                 <button 
-                  className="w-10 h-10 flex items-center justify-center border border-border-subtle rounded text-foreground focus:outline-none focus:ring-2 focus:ring-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-10 h-10 flex items-center justify-center border border-border-subtle text-foreground focus:outline-none focus:ring-2 focus:ring-foreground disabled:opacity-30 disabled:cursor-not-allowed"
                   onClick={() => scrollTo(currentIndex + 1)}
                   disabled={currentIndex === images.length - 1}
                   aria-label="Next image"

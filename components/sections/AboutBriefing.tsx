@@ -20,7 +20,7 @@ export function AboutBriefing() {
           
           {/* Header & First Paragraph */}
           <BorderGlow className="briefing-copy glass-panel md:col-start-7 md:col-span-6 md:row-start-1 mb-8 md:mb-0">
-            <h2 className="font-bebas text-[clamp(40px,5.5vw,80px)] leading-[0.95] tracking-tight text-foreground uppercase mb-6 md:mb-8">
+            <h2 className="font-display text-[clamp(40px,5.5vw,80px)] leading-[0.95] tracking-tight text-foreground uppercase mb-6 md:mb-8">
               The Professor&apos;s Briefing
             </h2>
             <p className="font-sans text-base md:text-[17px] leading-relaxed text-muted max-w-[62ch]">
@@ -64,9 +64,9 @@ export function AboutBriefing() {
             </p>
             
             <div className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-foreground flex flex-wrap gap-4 uppercase mb-12">
-              <span className="px-3 py-1.5 border border-border-subtle rounded-sm">{eventConfig.durationHours} hours</span>
-              <span className="px-3 py-1.5 border border-border-subtle rounded-sm">{eventConfig.mode}</span>
-              <span className="px-3 py-1.5 border border-border-subtle rounded-sm">AI-assisted building</span>
+              <span className="px-3 py-1.5 border border-border-subtle">{eventConfig.durationHours} hours</span>
+              <span className="px-3 py-1.5 border border-border-subtle">{eventConfig.mode}</span>
+              <span className="px-3 py-1.5 border border-border-subtle">AI-assisted building</span>
             </div>
             
             <div className="border-t border-border-subtle pt-8">

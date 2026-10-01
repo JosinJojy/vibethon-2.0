@@ -1,38 +1,33 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { eventConfig } from '@/content/event';
 
-export function Countdown({ target }: { target: 'eventStart' | 'eventEnd' }) {
-  const [mounted, setMounted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+const UNITS = [['days', 'Days'], ['hours', 'Hrs'], ['minutes', 'Min'], ['seconds', 'Sec']] as const;
+type TimeLeft = Record<(typeof UNITS)[number][0], number>;
+
+export function Countdown({ target, className = '' }: { target: 'eventStart' | 'eventEnd'; className?: string }) {
+  const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
   const [status, setStatus] = useState<'pending' | 'active' | 'ended'>('pending');
 
   const targetDate = target === 'eventStart' ? eventConfig.startsAt : eventConfig.endsAt;
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-    
     if (!targetDate) return;
 
     const end = new Date(targetDate).getTime();
 
     const updateTimer = () => {
       const now = Date.now();
-      const diff = end - now;
+      const diff = Math.max(end - now, 0);
 
-      if (diff <= 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        if (target === 'eventStart') {
-          setStatus(eventConfig.endsAt && now > new Date(eventConfig.endsAt).getTime() ? 'ended' : 'active');
-        } else {
-          setStatus('ended');
-        }
-        return;
+      if (diff === 0) {
+        const eventOver = target === 'eventEnd' || (eventConfig.endsAt && now > new Date(eventConfig.endsAt).getTime());
+        setStatus(eventOver ? 'ended' : 'active');
+      } else {
+        setStatus('pending');
       }
 
-      setStatus('pending');
       setTimeLeft({
         days: Math.floor(diff / (1000 * 60 * 60 * 24)),
         hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
@@ -46,50 +41,23 @@ export function Countdown({ target }: { target: 'eventStart' | 'eventEnd' }) {
     return () => clearInterval(interval);
   }, [targetDate, target]);
 
-  if (!targetDate) {
-    return (
-      <div className="flex flex-col items-center">
-        <p className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-accent-red mb-3 uppercase">Dates to be announced</p>
-        <div className="flex gap-4 md:gap-6 text-foreground font-bebas text-3xl md:text-5xl tracking-wide">
-          <div className="flex flex-col items-center"><span className="leading-none">--</span><span className="text-[10px] md:text-[11px] font-mono tracking-[0.1em] text-muted mt-1 uppercase">Days</span></div>
-          <span className="text-muted leading-none -mt-1">:</span>
-          <div className="flex flex-col items-center"><span className="leading-none">--</span><span className="text-[10px] md:text-[11px] font-mono tracking-[0.1em] text-muted mt-1 uppercase">Hours</span></div>
-          <span className="text-muted leading-none -mt-1">:</span>
-          <div className="flex flex-col items-center"><span className="leading-none">--</span><span className="text-[10px] md:text-[11px] font-mono tracking-[0.1em] text-muted mt-1 uppercase">Minutes</span></div>
-          <span className="text-muted leading-none -mt-1">:</span>
-          <div className="flex flex-col items-center"><span className="leading-none">--</span><span className="text-[10px] md:text-[11px] font-mono tracking-[0.1em] text-muted mt-1 uppercase">Seconds</span></div>
-        </div>
-      </div>
-    );
-  }
-
-  const statusLabel = status === 'pending' ? 'The heist begins in' : (status === 'active' ? 'The heist has begun' : 'The heist has concluded');
+  const statusLabel = !targetDate
+    ? 'Dates to be announced'
+    : status === 'pending' ? 'The heist begins in' : status === 'active' ? 'The heist has begun' : 'The heist has concluded';
 
   return (
-    <div className="flex flex-col items-center">
-      <p className="font-mono text-[11px] md:text-[12px] tracking-[0.12em] text-accent-red mb-3 uppercase" aria-live="polite">
-        {statusLabel}
-      </p>
-      <div className="flex gap-4 md:gap-6 text-foreground font-bebas text-3xl md:text-5xl tracking-wide tabular-nums">
-        <div className="flex flex-col items-center">
-          <span className="leading-none">{mounted ? String(timeLeft.days).padStart(2, '0') : '--'}</span>
-          <span className="text-[10px] md:text-[11px] font-mono tracking-[0.1em] text-muted mt-1 uppercase">Days</span>
-        </div>
-        <span className="text-muted leading-none -mt-1">:</span>
-        <div className="flex flex-col items-center">
-          <span className="leading-none">{mounted ? String(timeLeft.hours).padStart(2, '0') : '--'}</span>
-          <span className="text-[10px] md:text-[11px] font-mono tracking-[0.1em] text-muted mt-1 uppercase">Hours</span>
-        </div>
-        <span className="text-muted leading-none -mt-1">:</span>
-        <div className="flex flex-col items-center">
-          <span className="leading-none">{mounted ? String(timeLeft.minutes).padStart(2, '0') : '--'}</span>
-          <span className="text-[10px] md:text-[11px] font-mono tracking-[0.1em] text-muted mt-1 uppercase">Minutes</span>
-        </div>
-        <span className="text-muted leading-none -mt-1">:</span>
-        <div className="flex flex-col items-center">
-          <span className="leading-none">{mounted ? String(timeLeft.seconds).padStart(2, '0') : '--'}</span>
-          <span className="text-[10px] md:text-[11px] font-mono tracking-[0.1em] text-muted mt-1 uppercase">Seconds</span>
-        </div>
+    <div className={`countdown ${className}`}>
+      <p className="countdown-label font-mono" aria-live="polite">{statusLabel}</p>
+      <div className="countdown-digits font-display tabular-nums">
+        {UNITS.map(([key, label], i) => (
+          <Fragment key={key}>
+            {i > 0 && <span className="countdown-sep" aria-hidden="true">:</span>}
+            <div className="countdown-unit">
+              <span className="countdown-value">{timeLeft ? String(timeLeft[key]).padStart(2, '0') : '--'}</span>
+              <span className="countdown-unit-label font-mono">{label}</span>
+            </div>
+          </Fragment>
+        ))}
       </div>
     </div>
   );

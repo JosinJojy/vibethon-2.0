@@ -74,7 +74,7 @@ export function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
         </p>
         <button
           onClick={onClose}
-          className="w-12 h-12 flex items-center justify-center bg-[#1A1A1D] rounded text-foreground focus:outline-none focus:ring-2 focus:ring-accent-red"
+          className="w-12 h-12 flex items-center justify-center bg-[#1A1A1D] text-foreground focus:outline-none focus:ring-2 focus:ring-accent-red"
           aria-label="Close dialog"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -102,7 +102,7 @@ export function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
           <button
             onClick={handlePrev}
             disabled={index === 0}
-            className="w-14 h-14 flex items-center justify-center bg-[#1A1A1D] rounded text-foreground disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-red"
+            className="w-14 h-14 flex items-center justify-center bg-[#1A1A1D] text-foreground disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-red"
             aria-label="Previous image"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -115,7 +115,7 @@ export function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
           <button
             onClick={handleNext}
             disabled={index === images.length - 1}
-            className="w-14 h-14 flex items-center justify-center bg-[#1A1A1D] rounded text-foreground disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-red"
+            className="w-14 h-14 flex items-center justify-center bg-[#1A1A1D] text-foreground disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-red"
             aria-label="Next image"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

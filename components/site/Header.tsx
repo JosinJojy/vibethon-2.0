@@ -73,7 +73,7 @@ export function Header() {
         className={`site-header fixed top-0 w-full z-50 ${scrolled ? 'site-header--scrolled' : ''}`}
       >
         <div className="site-header-inner max-w-[1280px] mx-auto px-5 md:px-8 lg:px-10 flex items-center justify-between h-[64px] md:h-[72px]">
-          <Link href="#" className="flex items-center text-foreground font-bebas text-2xl tracking-wide focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background">
+          <Link href="#" className="flex items-center text-foreground font-display text-2xl tracking-wide focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-background">
             {assets.brandLogo.available && assets.brandLogo.src ? (
                // eslint-disable-next-line @next/next/no-img-element
               <img src={assets.brandLogo.src} alt="ENCIDE Logo" className="h-8" />
@@ -88,7 +88,7 @@ export function Header() {
               <a
                 key={link.label}
                 href={link.href}
-                className="text-sm font-sans font-medium text-muted hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-foreground rounded"
+                className="font-mono text-[12px] font-bold uppercase tracking-[0.16em] text-muted hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-foreground"
               >
                 {link.label}
               </a>
@@ -109,7 +109,7 @@ export function Header() {
             )}
             <button
               ref={menuButtonRef}
-              className="text-foreground focus:outline-none focus:ring-2 focus:ring-foreground rounded p-1"
+              className="text-foreground focus:outline-none focus:ring-2 focus:ring-foreground p-1"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
@@ -139,7 +139,7 @@ export function Header() {
               <a
                 key={link.label}
                 href={link.href}
-                className="text-2xl font-bebas text-foreground tracking-wide"
+                className="text-4xl font-display text-foreground uppercase tracking-wide"
                 onClick={() => setMenuOpen(false)}
               >
                 {link.label}

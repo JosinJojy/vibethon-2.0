@@ -15,7 +15,7 @@ export function EventPhases() {
       <div className="max-w-[1280px] mx-auto px-5 md:px-8 lg:px-16">
         
         <div className="mb-16 md:mb-24">
-          <h2 className="font-bebas text-[clamp(40px,5.5vw,80px)] leading-[0.95] tracking-tight text-foreground uppercase mb-4">
+          <h2 className="font-display text-[clamp(40px,5.5vw,80px)] leading-[0.95] tracking-tight text-foreground uppercase mb-4">
             Inside the eight hours
           </h2>
           <p className="font-sans text-base md:text-lg text-muted">
@@ -35,7 +35,7 @@ export function EventPhases() {
               <BorderGlow className="phase-row glass-panel group/row" contentClassName="flex flex-col md:grid md:grid-cols-12 md:gap-6">
               {/* Mobile: Number + Title. Desktop: separated */}
               <div className="flex items-baseline gap-4 md:col-span-2 md:block mb-4 md:mb-0">
-                <span className="font-bebas text-5xl md:text-7xl text-muted group-hover/row:text-accent-red transition-colors duration-300">
+                <span className="font-display text-5xl md:text-7xl text-muted group-hover/row:text-accent-red transition-colors duration-300">
                   {phase.number}
                 </span>
                 <h3 className="font-sans text-xl md:hidden font-semibold text-foreground">
@@ -53,7 +53,7 @@ export function EventPhases() {
               {/* Description and Badge */}
               <div className="md:col-span-6 flex flex-col items-start">
                 {phase.aiBadge && (
-                  <span className={`inline-block font-mono text-[10px] md:text-[11px] tracking-[0.1em] px-2 py-1 mb-4 border rounded-sm uppercase ${
+                  <span className={`inline-block font-mono text-[10px] md:text-[11px] tracking-[0.1em] px-2 py-1 mb-4 border uppercase ${
                     phase.aiBadge.includes('NO') 
                       ? 'border-accent-red text-accent-red bg-accent-red/5' 
                       : 'border-muted text-foreground'

@@ -39,7 +39,7 @@ export function EntryDossier() {
         <div className="mb-16 md:mb-24 flex flex-col md:flex-row gap-12 lg:gap-24 items-start">
           
           <div className="w-full md:w-5/12">
-            <h2 className="font-bebas text-[clamp(40px,5.5vw,80px)] leading-[0.95] tracking-tight text-foreground uppercase mb-6 md:mb-8">
+            <h2 className="font-display text-[clamp(40px,5.5vw,80px)] leading-[0.95] tracking-tight text-foreground uppercase mb-6 md:mb-8">
               Your entry dossier
             </h2>
             <p className="font-sans text-base md:text-[17px] leading-relaxed text-muted mb-10">

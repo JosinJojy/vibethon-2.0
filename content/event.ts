@@ -41,7 +41,7 @@ export const phaseCopy = [
     number: '01',
     title: 'Ideation & Problem Solving',
     description: 'Teams will begin by understanding the challenge, identifying target users and their needs, and developing their solution concept.\n\nAI assistance during this phase will be **strictly limited to basic clarification and understanding**. Teams must independently develop their problem interpretation, solution ideas, and initial approach without using AI to generate or shape their solutions.\n\nThis phase focuses on **creativity, critical thinking, problem understanding, and independent problem-solving**.',
-    aiBadge: 'NO AI ASSISTANCE'
+    aiBadge: null
   },
   {
     number: '02',

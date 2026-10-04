@@ -4,6 +4,16 @@ import { useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'motion/react';
 import { phaseCopy } from '@/content/event';
 
+function parseFormattedText(text: string) {
+  return text.split('\n\n').map((paragraph, i) => (
+    <p key={i} className="font-sans text-base md:text-[17px] leading-relaxed text-muted max-w-[62ch] mb-4 last:mb-0">
+      {paragraph.split(/\*\*(.*?)\*\*/g).map((part, j) => 
+        j % 2 === 1 ? <strong key={j} className="text-foreground">{part}</strong> : part
+      )}
+    </p>
+  ));
+}
+
 export function EventPhases() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
@@ -43,11 +53,12 @@ export function EventPhases() {
                     {phase.aiBadge}
                   </span>
                 )}
-                <p className="font-sans text-base md:text-[17px] leading-relaxed text-muted max-w-[62ch]">
-                  {phase.description}
-                </p>
+                <div className="phase-description">
+                  {parseFormattedText(phase.description)}
+                </div>
               </div>
             </motion.li>
+
           ))}
         </ol>
 

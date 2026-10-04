@@ -38,7 +38,20 @@ export function AboutBriefing() {
             VIBETHON 2.0 is an 8-hour, on-site vibe coding hackathon organized by <a href="https://www.encide.in" target="_blank" rel="noopener noreferrer" className="text-accent-red hover:underline decoration-accent-red underline-offset-4">{eventConfig.organizer.name}</a> at {eventConfig.organizer.institution}, {eventConfig.organizer.city}. Build with modern AI tools while demonstrating your own technical understanding, originality, problem-solving and product decisions.
           </p>
           <p className="font-serif italic text-[22px] md:text-[26px] leading-snug text-foreground mt-10 max-w-[36ch]">
-            AI can accelerate the work. Your team still owns the thinking, the decisions and the final product.
+            {shouldReduceMotion ? (
+              "AI can accelerate the work. Your team still owns the thinking, the decisions and the final product."
+            ) : (
+              "AI can accelerate the work. Your team still owns the thinking, the decisions and the final product.".split("").map((char, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0 }}
+                  animate={isInView ? { opacity: 1 } : undefined}
+                  transition={{ duration: 0.05, delay: 0.3 + index * 0.025 }}
+                >
+                  {char}
+                </motion.span>
+              ))
+            )}
           </p>
 
           <div className="mt-12 pt-8 border-t border-white/10">

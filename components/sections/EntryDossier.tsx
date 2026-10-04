@@ -73,7 +73,15 @@ export function EntryDossier() {
             <DossierDetails title="How judging works">
               <ul className="list-disc pl-5 flex flex-col gap-2">
                 {judgingCriteria.map((item, i) => (
-                  <li key={i}>{item}</li>
+                  <li key={i}>
+                    {typeof item === 'string' ? (
+                      item
+                    ) : (
+                      <>
+                        <strong className="text-foreground">{item.title}</strong> &ndash; {item.description}
+                      </>
+                    )}
+                  </li>
                 ))}
               </ul>
             </DossierDetails>

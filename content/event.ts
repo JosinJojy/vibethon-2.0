@@ -6,7 +6,7 @@ export const eventConfig = {
     shortName: 'MACE',
     city: 'Kothamangalam'
   },
-  durationHours: 16.5,
+  durationHours: 8,
   mode: 'On-site',
   timezone: 'Asia/Kolkata',
   motto: null as string | null,

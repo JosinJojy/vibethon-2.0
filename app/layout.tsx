@@ -32,6 +32,59 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "VIBETHON 2.0 | ENCIDE, MACE",
   description: "VIBETHON 2.0 is an 8-hour, on-site vibe coding hackathon organized by ENCIDE at Mar Athanasius College of Engineering, Kothamangalam. Build with modern AI tools while demonstrating your own technical understanding, originality, problem-solving and product decisions.",
+  keywords: [
+    "VIBETHON",
+    "VIBETHON 2.0",
+    "ENCIDE",
+    "VIBETHON MACE",
+    "VIBETHON ENCIDE",
+    "MACE",
+    "Mar Athanasius College of Engineering",
+    "Hackathon",
+    "Coding",
+    "Vibe Coding",
+    "AI",
+    "Artificial Intelligence",
+    "Tech Event",
+    "Kerala Hackathon",
+    "Kothamangalam"
+  ],
+  authors: [{ name: "ENCIDE", url: "https://www.encide.in" }],
+  creator: "ENCIDE",
+  publisher: "ENCIDE",
+  openGraph: {
+    title: "VIBETHON 2.0 | ENCIDE, MACE",
+    description: "Join VIBETHON 2.0, an 8-hour on-site vibe coding hackathon organized by ENCIDE at Mar Athanasius College of Engineering, Kothamangalam. Build with modern AI tools.",
+    url: "https://www.encide.in",
+    siteName: "VIBETHON 2.0",
+    images: [
+      {
+        url: "/brand/encide-logo.webp",
+        width: 1200,
+        height: 630,
+        alt: "VIBETHON 2.0 by ENCIDE",
+      }
+    ],
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "VIBETHON 2.0 | ENCIDE, MACE",
+    description: "Join VIBETHON 2.0, an 8-hour on-site vibe coding hackathon organized by ENCIDE at Mar Athanasius College of Engineering.",
+    images: ["/brand/encide-logo.webp"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({
